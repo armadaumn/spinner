@@ -13,5 +13,6 @@ type Response struct {
 type ResponseChan chan Response
 
 const (
+  Success             = 1
   NoCaptainsAvailable = -6
 )
