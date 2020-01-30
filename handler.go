@@ -1,8 +1,8 @@
 package spinner
 
 import (
-  "github.com/open-nebula/captain/dockercntrl"
-  "github.com/open-nebula/comms"
+  "github.com/armadanet/captain/dockercntrl"
+  "github.com/armadanet/comms"
   "github.com/google/uuid"
   "log"
 )
@@ -61,7 +61,7 @@ func (h *Handler) run() {
       for k,v := range h.clientMetaData {
         log.Printf("%v - %v (min:%v)\n", k, v, minimum)
         if (minimum == -1) || (v < minimum) {
-          chosen = k; minimum = v 
+          chosen = k; minimum = v
         }
       }
       if minimum == -1 {request.Success <- false; break}

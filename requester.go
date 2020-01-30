@@ -1,9 +1,9 @@
 package spinner
 
 import (
-  "github.com/open-nebula/captain/dockercntrl"
-  "github.com/open-nebula/spinner/spinresp"
-  "github.com/open-nebula/comms"
+  "github.com/armadanet/captain/dockercntrl"
+  "github.com/armadanet/spinner/spinresp"
+  "github.com/armadanet/comms"
   "log"
 )
 

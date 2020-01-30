@@ -1,9 +1,9 @@
 package spinner
 
 import (
-  "github.com/open-nebula/spinner/spinresp"
+  "github.com/armadanet/spinner/spinresp"
   "github.com/google/uuid"
-  "github.com/open-nebula/comms"
+  "github.com/armadanet/comms"
   "log"
 )
 

@@ -2,7 +2,7 @@ package spinner
 
 import (
   // "github.com/gorilla/websocket"
-  "github.com/open-nebula/comms"
+  "github.com/armadanet/comms"
   "net/http"
   "log"
 )
