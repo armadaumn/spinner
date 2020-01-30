@@ -1,4 +1,4 @@
-module github.com/armadanet/spinner/spinresp/v0
+module github.com/armadanet/spinner/spinresp
 
 go 1.13
 

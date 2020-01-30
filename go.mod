@@ -1,3 +1,3 @@
-module github.com/armadanet/spinner/v0
+module github.com/armadanet/spinner
 
 go 1.13
