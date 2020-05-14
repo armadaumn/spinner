@@ -1,7 +1,7 @@
 package main
 
 import (
-  "github.com/open-nebula/spinner"
+  "github.com/armadanet/spinner"
 )
 
 func main() {spinner.New().Run(5912)}
