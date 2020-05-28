@@ -69,6 +69,8 @@ func (s *server) Run(beaconURL string, port int) {
   fmt.Println(res)
 
   // join beacon swarm and attach self to beacon overlay
+  fmt.Println(s.container_name)
+  fmt.Println(res.BeaconOverlay)
   err = s.state.JoinSwarmAndOverlay(res.SwarmToken, res.BeaconIp, s.container_name, res.BeaconOverlay)
   if err != nil {
     log.Println(err)

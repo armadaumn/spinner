@@ -12,10 +12,9 @@ import (
 // PORT=internal open port
 func main() {
   // beaconURL := "http://public_ip:9898/newSpinner"
-  beaconURL := "http://localhost:9898"
-  fmt.Println(os.Getenv("URL"))
-  fmt.Println(os.Getenv("SPINNERID"))
-  sp, err := spinner.New("spinnerid")
+  beaconURL := os.Getenv("URL")
+  spinnerId := os.Getenv("SPINNERID")
+  sp, err := spinner.New(spinnerId)
   if err != nil {panic(err)}
   sp.Run(beaconURL, 5912)
 }
