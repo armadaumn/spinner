@@ -18,11 +18,18 @@ type Task struct {
 }
 
 type Handler struct {
+  // Messenger for client (captains)
   clients         *comms.Messenger
+  // captain map in handler
   clientMetaData  map[uuid.UUID]int
+  // Messenger for requester (tasks)
   Requester       *comms.Messenger
+
+  //
   Register        chan *comms.Instance
+
   Unregister      chan *comms.Instance
+
   Request         chan *Request
 }
 
@@ -69,7 +76,7 @@ func (h *Handler) run() {
       log.Printf("Chosen: %+v\n", chosen)
       h.clients.Message <- &comms.Message{
         Success: request.Success,
-        Reciever: &chosen,
+        Reciever: &chosen,  // captain id
         Data: request.Task,
       }
     }
@@ -88,6 +95,6 @@ func (h *Handler) SendTask(from *comms.Instance, task *dockercntrl.Config) bool 
     },
   }
   h.Request <- req
-  status := <- response
+  status := <- response  // wait for task sending result
   return status
 }

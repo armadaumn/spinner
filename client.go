@@ -16,11 +16,17 @@ type Client interface {
   Quit()
 }
 
+// client is abstration for a captain connection
 type client struct {
+  // pointing to spinner sync controller
   handler       *Handler
+  // record the socket connection to captain
   socket        *comms.Socket
+  // pointer for its instance in client messenger (in handler)
   self          *comms.Instance
+  // Queue for submitted task
   spinup        chan interface{}
+  // [taskId, requester id]
   responses     map[uuid.UUID]*uuid.UUID
   quit          chan struct{}
 }
@@ -47,6 +53,7 @@ func (c *client) Run() {
   write := (*c.socket).Writer()
   for {
     select {
+    // task execution response from captain (client)
     case response, ok := <- read:
       if !ok {return}
       resp, ok := response.(*spinresp.Response)
@@ -54,12 +61,17 @@ func (c *client) Run() {
       if resp.Id == nil {break}
       if identifier, ok := c.responses[*resp.Id]; ok {
         if resp.Code <= 0 {delete(c.responses, *resp.Id)}
+        // new routine to send back to requester
         go func() {
+          // identifier here is the requester id
+          // send the response back to requester
+          // return res back result channel -> only return when res is sent to writer of the requester
           if !c.handler.Requester.SendMessage(identifier, resp) {
             log.Printf("Failed: %+v\n", resp)
           }
         }()
       }
+    // one task ready to send to captain (client)
     case data, ok := <- c.spinup:
       if !ok {break}
       task, ok := data.(*Task)
@@ -77,8 +89,12 @@ func (c *client) Run() {
 // Register client with messenger and accept read/writes.
 func (c *client) Register() {
   var resp spinresp.Response
+  // socket reader and writer start buffering data
+  // resp is the type of data reader use
   (*c.socket).Start(resp)
+  // just create a client instance [captain id, captain spinup queue]
   c.self = c.handler.Requester.MakeInstance(c.spinup)
+  // (BUG!!!) c.self = c.handler.clients.MakeInstance(c.spinup)
   c.handler.Register <- c.self
   go c.Run()
   log.Println("Client registered")

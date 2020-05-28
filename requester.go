@@ -52,6 +52,7 @@ func (r *requester) Run() {
       log.Printf("%T\n", dockerconfig)
       go func() {
         log.Printf("Sending: %+v\n", dockerconfig)
+        // success if task sent to captain spinup (nothing related to execution result)
         success := r.handler.SendTask(r.self, dockerconfig)
         if !success {
           log.Printf("Failure: %+v\n", dockerconfig)

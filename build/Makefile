@@ -1,10 +1,12 @@
-IMAGE := nebula-spinner
-
-build:
-	cd .. && docker build -t $(IMAGE) -f build/Dockerfile .
+IMAGE_NAME := spinner
+CONTAINER_NAME := spinneruniqueid
 
 run: build
-	docker run -it -p 5912:5912 $(IMAGE)
+	docker run -it --name $(CONTAINER_NAME) -e URL=http://localhost:9898 -e SPINNERID=spinnerid -v /var/run/docker.sock:/var/run/docker.sock $(IMAGE_NAME)
 
-test-send:
-	
+build:
+	cd .. && docker build -t $(IMAGE_NAME) -f build/Dockerfile .
+
+clean:
+		docker rm $(CONTAINER_NAME)
+		docker rmi $(IMAGE_NAME)

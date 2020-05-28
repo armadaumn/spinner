@@ -8,6 +8,10 @@ import (
 )
 
 // On request adds client through the messenger
+/*
+captain call this endpoint to connect the spinner (register)
+keep socket connection with the spinner during life time
+*/
 func join(handler *Handler) func(http.ResponseWriter, *http.Request) {
   return func(w http.ResponseWriter, r *http.Request) {
     socket, err := comms.AcceptSocket(w,r)
