@@ -3,7 +3,7 @@ package main
 import (
   "github.com/armadanet/spinner"
   "os"
-  "fmt"
+  //"fmt"
 )
 
 // os.Getenv("URL")
