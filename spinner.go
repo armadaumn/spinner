@@ -57,7 +57,7 @@ func (s *server) Run(beaconURL string, port int) {
   // Query beacon
   fmt.Printf("Query beacon /newSpinner...")
   var res newSpinnerRes
-  err := comms.SendPostRequest(beaconURL+"/newSpinner", map[string]string{
+  err := comms.SendPostRequest(beaconURL, map[string]string{
     "SpinnerId":s.container_name,
   }, &res)
   if err!=nil {
