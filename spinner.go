@@ -65,8 +65,6 @@ func (s *server) Run(beaconURL string, port int) {
     return
   }
   s.overlay_name = res.SpinnerOverlay
-  // fmt.Print("Get beacon info: ")
-  // fmt.Println(res)
 
   // join beacon swarm and attach self to beacon overlay
   err = s.state.JoinSwarmAndOverlay(res.SwarmToken, res.BeaconIp, s.container_name, res.BeaconOverlay)
@@ -95,7 +93,16 @@ func (s *server) Run(beaconURL string, port int) {
     return
   }
   if selfSpin {
-    //////////////////////////
+    // captain name for bridge network communication
+    captain_url := os.Getenv("CAPTAIN_URL")
+    // notify the parent captain spinner overlay_name for it to join
+    err = comms.SendPostRequest(captain_url, map[string]string{
+      "OverlayName":res.SpinnerOverlay,
+    }, nil)
+    if err!=nil {
+      log.Println(err)
+      return
+    }
   }
 
   // TODO: change the exit logic
