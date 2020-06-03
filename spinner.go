@@ -11,6 +11,7 @@ import (
   "strconv"
   "fmt"
   "time"
+  "os"
 )
 
 // Server for the Nebula Spinner
@@ -55,7 +56,7 @@ type newSpinnerRes struct {
 // Runs the spinner server.
 func (s *server) Run(beaconURL string, port int) {
   // Query beacon
-  fmt.Printf("Query beacon /newSpinner...")
+  log.Println("New Spinner query beacon...")
   var res newSpinnerRes
   err := comms.SendPostRequest(beaconURL, map[string]string{
     "SpinnerId":s.container_name,
@@ -65,8 +66,8 @@ func (s *server) Run(beaconURL string, port int) {
     return
   }
   s.overlay_name = res.SpinnerOverlay
-  fmt.Print("Get beacon info: ")
-  fmt.Println(res)
+  // fmt.Print("Get beacon info: ")
+  // fmt.Println(res)
 
   // join beacon swarm and attach self to beacon overlay
   err = s.state.JoinSwarmAndOverlay(res.SwarmToken, res.BeaconIp, s.container_name, res.BeaconOverlay)
@@ -83,12 +84,28 @@ func (s *server) Run(beaconURL string, port int) {
   }
 
   // go routine periodically ping beacon to notify the alive (wait 1s)
-  go s.Ping(res.BeaconName)
-
-  // go routine notify parent captain join finish (wait 1s)
-
+  go s.ping(res.BeaconName)
 
   // start the server
+  go s.startServer(port)
+
+  // spinner notifies parent captain
+  selfSpin, err := strconv.ParseBool(os.Getenv("SELFSPIN"))
+  if err != nil {
+    log.Println(err)
+    return
+  }
+  if selfSpin {
+    //////////////////////////
+  }
+
+  // TODO: change the exit logic
+  select {
+  case <- make(chan interface{}):
+  }
+}
+
+func (s *server) startServer(port int) {
   if port == 0 {
     port, err = freeport.GetFreePort()
     if err != nil {log.Println(err); return}
@@ -96,8 +113,7 @@ func (s *server) Run(beaconURL string, port int) {
   log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), s.router))
 }
 
-
-func (s *server) Ping(beaconName string) {
+func (s *server) ping(beaconName string) {
   for {
     // err := comms.SendPostRequest("http://localhost:8787/register", map[string]interface{}{
     err := comms.SendPostRequest("http://"+beaconName+":8787/register", map[string]interface{}{
