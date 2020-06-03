@@ -9,7 +9,6 @@ import (
   "net/http"
   "log"
   "strconv"
-  "fmt"
   "time"
   "os"
 )
@@ -107,7 +106,7 @@ func (s *server) Run(beaconURL string, port int) {
 
 func (s *server) startServer(port int) {
   if port == 0 {
-    port, err = freeport.GetFreePort()
+    port, err := freeport.GetFreePort()
     if err != nil {log.Println(err); return}
   }
   log.Fatal(http.ListenAndServe(":" + strconv.Itoa(port), s.router))
