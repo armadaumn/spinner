@@ -1,16 +1,13 @@
-IMAGE_NAME := spinner
-CONTAINER_NAME := spinnerid
-URL := http://3.23.114.100:9898/newSpinner
-SELFSPIN := true
-CAPTAIN_URL := http://primary:9999/joinFinished
+DEV_CONTAINER := spinresp
+
+protobuf: protobuf_build
+	cd .. && docker run -it -v `pwd`:/home/dev $(DEV_CONTAINER) protoc -I $(DEV_CONTAINER)/ $(DEV_CONTAINER)/$(DEV_CONTAINER).proto --go_out=plugins=grpc:$(DEV_CONTAINER) --go_opt=paths=source_relative
+
+protobuf_build:
+	cd .. && docker build -t $(DEV_CONTAINER) -f build/Dockerfile.dev .
+
+test: build 
+	cd .. && docker run -t -v `pwd`:/home/dev $(DEV_CONTAINER) go test -v . 
 
 build:
-	cd .. && docker build -t $(IMAGE_NAME) -f build/Dockerfile .
-
-run: build
-	docker run -it --name $(CONTAINER_NAME) -e URL=$(URL) -e SPINNERID=$(CONTAINER_NAME) -e SELFSPIN=$(SELFSPIN) -e CAPTAIN_URL=$(CAPTAIN_URL) -v /var/run/docker.sock:/var/run/docker.sock $(IMAGE_NAME)
-
-clean:
-		docker rm $(CONTAINER_NAME)
-		docker rmi $(IMAGE_NAME)
-		docker swarm leave -f
+	cd .. && docker build -t $(DEV_CONTAINER) -f build/Dockerfile.dev . 
