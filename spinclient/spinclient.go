@@ -1,8 +1,7 @@
 package spinclient
 
 import (
-	"github.com/aramdanet/spinresp"
-	"errors"
+	"github.com/armadanet/spinner/spinresp"
 )
 
 type client struct {
@@ -14,13 +13,15 @@ type Client interface {
 	Id() string 	
 }
 
-func RequestClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) (*Client, error) {
-	client := &Client{
+func RequestClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) (Client, error) {
+	client := &client{
 		id: request.GetCaptainId().GetValue(),
 		stream: stream, 
 	}
-	if !client.id {
-		return nil, errors.New("No Client ID given")
+	if client.id == "" {
+		return nil, &MalformedClientRequestError{
+			err: "No Client ID given",
+		}
 	}
 	return client, nil
 }

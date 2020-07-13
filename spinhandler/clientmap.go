@@ -2,6 +2,8 @@ package spinhandler
 
 import (
 	"github.com/armadanet/spinner/spinclient"
+	"sync"
+	"errors"
 )
 
 type clientmap struct {
@@ -10,19 +12,19 @@ type clientmap struct {
 }
 
 type ClientMap interface {
-	Get(string) (spinclient.Client, ok)
+	Get(string) (spinclient.Client, bool)
 	Keys()		[]string
 	Len()		int
 }
 
-def newclientmap() *clientmap {
+func newclientmap() *clientmap {
 	return &clientmap{
 		mutex: &sync.Mutex{},
 		clients: make(map[string]spinclient.Client),
 	}
 }
 
-func (cm *clientmap) Get(key string) (spinclient.Client, ok) {
+func (cm *clientmap) Get(key string) (spinclient.Client, bool) {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
 	val, ok := cm.clients[key]

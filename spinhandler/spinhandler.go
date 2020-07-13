@@ -4,7 +4,7 @@ import (
 	"github.com/armadanet/spinner/spinresp"
 	"github.com/armadanet/spinner/spinclient"
 	"sync"
-	"errors"
+	// "errors"
 )
 
 type handler struct {
@@ -13,7 +13,7 @@ type handler struct {
 }
 
 type Handler interface{
-	AddClient(request *spinresp.JoinRequest) error
+	AddClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) error
 	RemoveClient(id string) error
 	ChooseClient(ch Chooser) (string, error)
 	// ConnectClient(id string) error
@@ -27,7 +27,7 @@ func New() Handler {
 }
 
 func (h *handler) AddClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) error {
-	client, err := RequestClient(request, stream)
+	client, err := spinclient.RequestClient(request, stream)
 	if err != nil {return err}
 	err = h.clientmap.add(client)
 	return err
@@ -39,5 +39,5 @@ func (h *handler) RemoveClient(id string) error {
 }
 
 func (h *handler) ChooseClient(ch Chooser) (string, error) {
-	return Chooser.F(h.clientmap)
+	return ch.F(h.clientmap)
 }

@@ -9,7 +9,7 @@ import (
 
 type spinnerserver struct {
   spinresp.UnimplementedSpinnerServer
-  handler     *spinhandler.Handler
+  handler     spinhandler.Handler
 }
 
 func New() spinresp.SpinnerServer {
