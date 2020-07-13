@@ -21,3 +21,14 @@ func TestMalformedClient(t *testing.T) {
 		}
 	}
 }
+
+func TestWellformedClient(t *testing.T) {
+	req := &spinresp.JoinRequest{
+		CaptainId: &spinresp.UUID{
+			Value: "fake_id",
+		},
+	}
+	if _, err := spinclient.RequestClient(req, nil); err != nil {
+		t.Errorf("Unexpected error: %v", err)
+	}
+}
