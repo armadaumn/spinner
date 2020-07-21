@@ -170,6 +170,99 @@ func (x *TaskRequest) GetTaskId() *UUID {
 	return nil
 }
 
+type TaskLog struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	TaskId *UUID  `protobuf:"bytes,1,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	Log    string `protobuf:"bytes,2,opt,name=log,proto3" json:"log,omitempty"`
+}
+
+func (x *TaskLog) Reset() {
+	*x = TaskLog{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_spinresp_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TaskLog) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskLog) ProtoMessage() {}
+
+func (x *TaskLog) ProtoReflect() protoreflect.Message {
+	mi := &file_spinresp_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskLog.ProtoReflect.Descriptor instead.
+func (*TaskLog) Descriptor() ([]byte, []int) {
+	return file_spinresp_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *TaskLog) GetTaskId() *UUID {
+	if x != nil {
+		return x.TaskId
+	}
+	return nil
+}
+
+func (x *TaskLog) GetLog() string {
+	if x != nil {
+		return x.Log
+	}
+	return ""
+}
+
+type TaskCompletion struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *TaskCompletion) Reset() {
+	*x = TaskCompletion{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_spinresp_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *TaskCompletion) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TaskCompletion) ProtoMessage() {}
+
+func (x *TaskCompletion) ProtoReflect() protoreflect.Message {
+	mi := &file_spinresp_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TaskCompletion.ProtoReflect.Descriptor instead.
+func (*TaskCompletion) Descriptor() ([]byte, []int) {
+	return file_spinresp_proto_rawDescGZIP(), []int{4}
+}
+
 var File_spinresp_proto protoreflect.FileDescriptor
 
 var file_spinresp_proto_rawDesc = []byte{
@@ -183,16 +276,28 @@ var file_spinresp_proto_rawDesc = []byte{
 	0x74, 0x61, 0x69, 0x6e, 0x49, 0x64, 0x22, 0x36, 0x0a, 0x0b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x69, 0x64,
 	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73,
-	0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64, 0x32, 0x43,
-	0x0a, 0x07, 0x53, 0x70, 0x69, 0x6e, 0x6e, 0x65, 0x72, 0x12, 0x38, 0x0a, 0x06, 0x41, 0x74, 0x74,
-	0x61, 0x63, 0x68, 0x12, 0x15, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x4a,
-	0x6f, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x73, 0x70, 0x69,
-	0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73,
-	0x74, 0x30, 0x01, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f,
-	0x6d, 0x2f, 0x43, 0x6f, 0x64, 0x79, 0x50, 0x65, 0x72, 0x61, 0x6b, 0x73, 0x6c, 0x69, 0x73, 0x2f,
-	0x61, 0x72, 0x6d, 0x61, 0x64, 0x61, 0x6e, 0x65, 0x74, 0x2f, 0x73, 0x70, 0x69, 0x6e, 0x6e, 0x65,
-	0x72, 0x2f, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74,
-	0x6f, 0x33,
+	0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64, 0x22, 0x44,
+	0x0a, 0x07, 0x54, 0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x12, 0x27, 0x0a, 0x07, 0x74, 0x61, 0x73,
+	0x6b, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70, 0x69,
+	0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b,
+	0x49, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x6f, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
+	0x03, 0x6c, 0x6f, 0x67, 0x22, 0x10, 0x0a, 0x0e, 0x54, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x6d, 0x70,
+	0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e, 0x32, 0xb0, 0x01, 0x0a, 0x07, 0x53, 0x70, 0x69, 0x6e, 0x6e,
+	0x65, 0x72, 0x12, 0x38, 0x0a, 0x06, 0x41, 0x74, 0x74, 0x61, 0x63, 0x68, 0x12, 0x15, 0x2e, 0x73,
+	0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54,
+	0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x03,
+	0x52, 0x75, 0x6e, 0x12, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54,
+	0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x1a, 0x18, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73,
+	0x70, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e,
+	0x28, 0x01, 0x12, 0x35, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x2e,
+	0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e,
+	0x54, 0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x30, 0x01, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6f, 0x64, 0x79, 0x50, 0x65, 0x72, 0x61,
+	0x6b, 0x73, 0x6c, 0x69, 0x73, 0x2f, 0x61, 0x72, 0x6d, 0x61, 0x64, 0x61, 0x6e, 0x65, 0x74, 0x2f,
+	0x73, 0x70, 0x69, 0x6e, 0x6e, 0x65, 0x72, 0x2f, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70,
+	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -207,22 +312,29 @@ func file_spinresp_proto_rawDescGZIP() []byte {
 	return file_spinresp_proto_rawDescData
 }
 
-var file_spinresp_proto_msgTypes = make([]protoimpl.MessageInfo, 3)
+var file_spinresp_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_spinresp_proto_goTypes = []interface{}{
-	(*UUID)(nil),        // 0: spinresp.UUID
-	(*JoinRequest)(nil), // 1: spinresp.JoinRequest
-	(*TaskRequest)(nil), // 2: spinresp.TaskRequest
+	(*UUID)(nil),           // 0: spinresp.UUID
+	(*JoinRequest)(nil),    // 1: spinresp.JoinRequest
+	(*TaskRequest)(nil),    // 2: spinresp.TaskRequest
+	(*TaskLog)(nil),        // 3: spinresp.TaskLog
+	(*TaskCompletion)(nil), // 4: spinresp.TaskCompletion
 }
 var file_spinresp_proto_depIdxs = []int32{
 	0, // 0: spinresp.JoinRequest.captain_id:type_name -> spinresp.UUID
 	0, // 1: spinresp.TaskRequest.task_id:type_name -> spinresp.UUID
-	1, // 2: spinresp.Spinner.Attach:input_type -> spinresp.JoinRequest
-	2, // 3: spinresp.Spinner.Attach:output_type -> spinresp.TaskRequest
-	3, // [3:4] is the sub-list for method output_type
-	2, // [2:3] is the sub-list for method input_type
-	2, // [2:2] is the sub-list for extension type_name
-	2, // [2:2] is the sub-list for extension extendee
-	0, // [0:2] is the sub-list for field type_name
+	0, // 2: spinresp.TaskLog.task_id:type_name -> spinresp.UUID
+	1, // 3: spinresp.Spinner.Attach:input_type -> spinresp.JoinRequest
+	3, // 4: spinresp.Spinner.Run:input_type -> spinresp.TaskLog
+	2, // 5: spinresp.Spinner.Request:input_type -> spinresp.TaskRequest
+	2, // 6: spinresp.Spinner.Attach:output_type -> spinresp.TaskRequest
+	4, // 7: spinresp.Spinner.Run:output_type -> spinresp.TaskCompletion
+	3, // 8: spinresp.Spinner.Request:output_type -> spinresp.TaskLog
+	6, // [6:9] is the sub-list for method output_type
+	3, // [3:6] is the sub-list for method input_type
+	3, // [3:3] is the sub-list for extension type_name
+	3, // [3:3] is the sub-list for extension extendee
+	0, // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_spinresp_proto_init() }
@@ -267,6 +379,30 @@ func file_spinresp_proto_init() {
 				return nil
 			}
 		}
+		file_spinresp_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TaskLog); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_spinresp_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*TaskCompletion); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
@@ -274,7 +410,7 @@ func file_spinresp_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_spinresp_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   3,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
@@ -301,6 +437,8 @@ const _ = grpc.SupportPackageIsVersion6
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://godoc.org/google.golang.org/grpc#ClientConn.NewStream.
 type SpinnerClient interface {
 	Attach(ctx context.Context, in *JoinRequest, opts ...grpc.CallOption) (Spinner_AttachClient, error)
+	Run(ctx context.Context, opts ...grpc.CallOption) (Spinner_RunClient, error)
+	Request(ctx context.Context, in *TaskRequest, opts ...grpc.CallOption) (Spinner_RequestClient, error)
 }
 
 type spinnerClient struct {
@@ -343,9 +481,77 @@ func (x *spinnerAttachClient) Recv() (*TaskRequest, error) {
 	return m, nil
 }
 
+func (c *spinnerClient) Run(ctx context.Context, opts ...grpc.CallOption) (Spinner_RunClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[1], "/spinresp.Spinner/Run", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &spinnerRunClient{stream}
+	return x, nil
+}
+
+type Spinner_RunClient interface {
+	Send(*TaskLog) error
+	CloseAndRecv() (*TaskCompletion, error)
+	grpc.ClientStream
+}
+
+type spinnerRunClient struct {
+	grpc.ClientStream
+}
+
+func (x *spinnerRunClient) Send(m *TaskLog) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *spinnerRunClient) CloseAndRecv() (*TaskCompletion, error) {
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	m := new(TaskCompletion)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *spinnerClient) Request(ctx context.Context, in *TaskRequest, opts ...grpc.CallOption) (Spinner_RequestClient, error) {
+	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[2], "/spinresp.Spinner/Request", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &spinnerRequestClient{stream}
+	if err := x.ClientStream.SendMsg(in); err != nil {
+		return nil, err
+	}
+	if err := x.ClientStream.CloseSend(); err != nil {
+		return nil, err
+	}
+	return x, nil
+}
+
+type Spinner_RequestClient interface {
+	Recv() (*TaskLog, error)
+	grpc.ClientStream
+}
+
+type spinnerRequestClient struct {
+	grpc.ClientStream
+}
+
+func (x *spinnerRequestClient) Recv() (*TaskLog, error) {
+	m := new(TaskLog)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 // SpinnerServer is the server API for Spinner service.
 type SpinnerServer interface {
 	Attach(*JoinRequest, Spinner_AttachServer) error
+	Run(Spinner_RunServer) error
+	Request(*TaskRequest, Spinner_RequestServer) error
 }
 
 // UnimplementedSpinnerServer can be embedded to have forward compatible implementations.
@@ -354,6 +560,12 @@ type UnimplementedSpinnerServer struct {
 
 func (*UnimplementedSpinnerServer) Attach(*JoinRequest, Spinner_AttachServer) error {
 	return status.Errorf(codes.Unimplemented, "method Attach not implemented")
+}
+func (*UnimplementedSpinnerServer) Run(Spinner_RunServer) error {
+	return status.Errorf(codes.Unimplemented, "method Run not implemented")
+}
+func (*UnimplementedSpinnerServer) Request(*TaskRequest, Spinner_RequestServer) error {
+	return status.Errorf(codes.Unimplemented, "method Request not implemented")
 }
 
 func RegisterSpinnerServer(s *grpc.Server, srv SpinnerServer) {
@@ -381,6 +593,53 @@ func (x *spinnerAttachServer) Send(m *TaskRequest) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _Spinner_Run_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(SpinnerServer).Run(&spinnerRunServer{stream})
+}
+
+type Spinner_RunServer interface {
+	SendAndClose(*TaskCompletion) error
+	Recv() (*TaskLog, error)
+	grpc.ServerStream
+}
+
+type spinnerRunServer struct {
+	grpc.ServerStream
+}
+
+func (x *spinnerRunServer) SendAndClose(m *TaskCompletion) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *spinnerRunServer) Recv() (*TaskLog, error) {
+	m := new(TaskLog)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Spinner_Request_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(TaskRequest)
+	if err := stream.RecvMsg(m); err != nil {
+		return err
+	}
+	return srv.(SpinnerServer).Request(m, &spinnerRequestServer{stream})
+}
+
+type Spinner_RequestServer interface {
+	Send(*TaskLog) error
+	grpc.ServerStream
+}
+
+type spinnerRequestServer struct {
+	grpc.ServerStream
+}
+
+func (x *spinnerRequestServer) Send(m *TaskLog) error {
+	return x.ServerStream.SendMsg(m)
+}
+
 var _Spinner_serviceDesc = grpc.ServiceDesc{
 	ServiceName: "spinresp.Spinner",
 	HandlerType: (*SpinnerServer)(nil),
@@ -389,6 +648,16 @@ var _Spinner_serviceDesc = grpc.ServiceDesc{
 		{
 			StreamName:    "Attach",
 			Handler:       _Spinner_Attach_Handler,
+			ServerStreams: true,
+		},
+		{
+			StreamName:    "Run",
+			Handler:       _Spinner_Run_Handler,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "Request",
+			Handler:       _Spinner_Request_Handler,
 			ServerStreams: true,
 		},
 	},

@@ -28,7 +28,11 @@ func TestWellformedClient(t *testing.T) {
 			Value: "fake_id",
 		},
 	}
-	if _, err := spinclient.RequestClient(req, nil); err != nil {
+	resp, err := spinclient.RequestClient(req, nil);
+	if  err != nil {
 		t.Errorf("Unexpected error: %v", err)
+	}
+	if resp.Id() != "fake_id" {
+		t.Errorf("ID should be 'fake_id', not '%v'", resp.Id())
 	}
 }

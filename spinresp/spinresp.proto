@@ -6,7 +6,8 @@ option go_package = "github.com/CodyPerakslis/armadanet/spinner/spinresp";
 
 service Spinner {
     rpc Attach (JoinRequest) returns (stream TaskRequest);
-    // rpc Run (stream TaskRequest) returns (stream TaskResult); 
+    rpc Run (stream TaskLog) returns (TaskCompletion); 
+    rpc Request (TaskRequest) returns (stream TaskLog);
 }
 
 message UUID {
@@ -19,4 +20,12 @@ message JoinRequest {
 
 message TaskRequest {
     UUID task_id = 1;
+}
+
+message TaskLog {
+    UUID task_id = 1;
+    string log = 2;
+}
+
+message TaskCompletion {
 }
