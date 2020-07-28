@@ -24,3 +24,13 @@ func (s *spinnerserver) Attach(req *spinresp.JoinRequest, stream spinresp.Spinne
   }
   return nil
 }
+
+func (s *spinnerserver) ReportStatus(ctx context.Context, req *pb.NodeInfo) (*pb.PingResp, error) {
+  resp := pb.PingResp{}
+  if err := s.handler.UpdateClient(req); err != nil {
+    resp.value = false
+    return resp, err
+  } 
+  resp.value = true
+  return resp, nil
+}

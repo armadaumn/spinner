@@ -64,3 +64,13 @@ func (cm *clientmap) remove(id string) error {
 	delete(cm.clients, id)
 	return nil
 }
+
+func (cm *clientmap) update(id string, req *pb.NodeInfo) error {
+	cm.mutex.Lock()
+	defer cm.mutex.Unlock()
+	if _, ok := cm.clients[id]; !ok {
+		return errors.New("No such client")
+	}
+	cm.clients[id].info.status = req
+	return nil
+}

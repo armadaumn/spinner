@@ -8,10 +8,16 @@ import (
 type client struct {
 	id			string
 	stream 		spinresp.Spinner_AttachServer
+	info        Node
 }
 
 type Client interface {
 	Id() string 	
+}
+
+type Node struct {
+	openPorts   []string
+	status      spinresp.NodeInfo
 }
 
 func RequestClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) (*Client, error) {

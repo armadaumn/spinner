@@ -38,6 +38,12 @@ func (h *handler) RemoveClient(id string) error {
 	return err
 }
 
+func (h *handler) UpdateClient(req *pb.NodeInfo) (*pb.PingResp, error) {
+	id := req.GetCaptainId().GetValue()
+	err := h.clientmap.update(id)
+	return err
+}
+
 func (h *handler) ChooseClient(ch Chooser) (string, error) {
 	return Chooser.F(h.clientmap)
 }
