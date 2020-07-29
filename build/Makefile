@@ -1,14 +1,31 @@
-DEV_CONTAINER := spinresp
+DEV_CONTAINER := spincomm
+DEV_DOCKERFILE := Dockerfile.dev
+CONTAINER := spinner
+DOCKERFILE := Dockerfile
+NETWORK := spinner-local-network
 
 protobuf: protobuf_build
 	cd .. && docker run -it -v `pwd`:/home/dev $(DEV_CONTAINER) protoc -I $(DEV_CONTAINER)/ $(DEV_CONTAINER)/$(DEV_CONTAINER).proto --go_out=plugins=grpc:$(DEV_CONTAINER) --go_opt=paths=source_relative
 
 protobuf_build:
-	cd .. && docker build -t $(DEV_CONTAINER) -f build/Dockerfile.dev .
+	cd .. && docker build -t $(DEV_CONTAINER) -f build/$(DEV_DOCKERFILE) .
 
-test: build 
+test: test_build 
 	# cd .. && docker run -t -v `pwd`:/home/dev $(DEV_CONTAINER) go test -v . 
 	cd .. && docker run -t -v `pwd`:/home/dev $(DEV_CONTAINER) go test -v ./spinclient
 
-build:
-	cd .. && docker build -t $(DEV_CONTAINER) -f build/Dockerfile.dev . 
+test_build:
+	cd .. && docker build -t $(DEV_CONTAINER) -f build/$(DEV_DOCKERFILE) . 
+
+run: build network
+	docker run -it --net $(NETWORK) --name $(CONTAINER) $(CONTAINER)
+
+build: test_build
+	cd .. && docker build -t $(CONTAINER) -f build/$(DOCKERFILE) --build-arg base=$(DEV_CONTAINER) .
+
+network:
+	docker network create $(NETWORK) || true
+
+clean:
+	docker rm -f $(CONTAINER) || true
+	docker network rm $(NETWORK) || true

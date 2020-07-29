@@ -2,9 +2,9 @@
 // versions:
 // 	protoc-gen-go v1.23.0
 // 	protoc        v3.12.2
-// source: spinresp.proto
+// source: spincomm.proto
 
-package spinresp
+package spincomm
 
 import (
 	context "context"
@@ -40,7 +40,7 @@ type UUID struct {
 func (x *UUID) Reset() {
 	*x = UUID{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_spinresp_proto_msgTypes[0]
+		mi := &file_spincomm_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -53,7 +53,7 @@ func (x *UUID) String() string {
 func (*UUID) ProtoMessage() {}
 
 func (x *UUID) ProtoReflect() protoreflect.Message {
-	mi := &file_spinresp_proto_msgTypes[0]
+	mi := &file_spincomm_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -66,7 +66,7 @@ func (x *UUID) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UUID.ProtoReflect.Descriptor instead.
 func (*UUID) Descriptor() ([]byte, []int) {
-	return file_spinresp_proto_rawDescGZIP(), []int{0}
+	return file_spincomm_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *UUID) GetValue() string {
@@ -87,7 +87,7 @@ type JoinRequest struct {
 func (x *JoinRequest) Reset() {
 	*x = JoinRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_spinresp_proto_msgTypes[1]
+		mi := &file_spincomm_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -100,7 +100,7 @@ func (x *JoinRequest) String() string {
 func (*JoinRequest) ProtoMessage() {}
 
 func (x *JoinRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_spinresp_proto_msgTypes[1]
+	mi := &file_spincomm_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -113,7 +113,7 @@ func (x *JoinRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use JoinRequest.ProtoReflect.Descriptor instead.
 func (*JoinRequest) Descriptor() ([]byte, []int) {
-	return file_spinresp_proto_rawDescGZIP(), []int{1}
+	return file_spincomm_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *JoinRequest) GetCaptainId() *UUID {
@@ -134,7 +134,7 @@ type TaskRequest struct {
 func (x *TaskRequest) Reset() {
 	*x = TaskRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_spinresp_proto_msgTypes[2]
+		mi := &file_spincomm_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -147,7 +147,7 @@ func (x *TaskRequest) String() string {
 func (*TaskRequest) ProtoMessage() {}
 
 func (x *TaskRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_spinresp_proto_msgTypes[2]
+	mi := &file_spincomm_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -160,7 +160,7 @@ func (x *TaskRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskRequest.ProtoReflect.Descriptor instead.
 func (*TaskRequest) Descriptor() ([]byte, []int) {
-	return file_spinresp_proto_rawDescGZIP(), []int{2}
+	return file_spincomm_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *TaskRequest) GetTaskId() *UUID {
@@ -182,7 +182,7 @@ type TaskLog struct {
 func (x *TaskLog) Reset() {
 	*x = TaskLog{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_spinresp_proto_msgTypes[3]
+		mi := &file_spincomm_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -195,7 +195,7 @@ func (x *TaskLog) String() string {
 func (*TaskLog) ProtoMessage() {}
 
 func (x *TaskLog) ProtoReflect() protoreflect.Message {
-	mi := &file_spinresp_proto_msgTypes[3]
+	mi := &file_spincomm_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -208,7 +208,7 @@ func (x *TaskLog) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskLog.ProtoReflect.Descriptor instead.
 func (*TaskLog) Descriptor() ([]byte, []int) {
-	return file_spinresp_proto_rawDescGZIP(), []int{3}
+	return file_spincomm_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *TaskLog) GetTaskId() *UUID {
@@ -234,7 +234,7 @@ type TaskCompletion struct {
 func (x *TaskCompletion) Reset() {
 	*x = TaskCompletion{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_spinresp_proto_msgTypes[4]
+		mi := &file_spincomm_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -247,7 +247,7 @@ func (x *TaskCompletion) String() string {
 func (*TaskCompletion) ProtoMessage() {}
 
 func (x *TaskCompletion) ProtoReflect() protoreflect.Message {
-	mi := &file_spinresp_proto_msgTypes[4]
+	mi := &file_spincomm_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -260,76 +260,76 @@ func (x *TaskCompletion) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use TaskCompletion.ProtoReflect.Descriptor instead.
 func (*TaskCompletion) Descriptor() ([]byte, []int) {
-	return file_spinresp_proto_rawDescGZIP(), []int{4}
+	return file_spincomm_proto_rawDescGZIP(), []int{4}
 }
 
-var File_spinresp_proto protoreflect.FileDescriptor
+var File_spincomm_proto protoreflect.FileDescriptor
 
-var file_spinresp_proto_rawDesc = []byte{
-	0x0a, 0x0e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
-	0x12, 0x08, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x22, 0x1c, 0x0a, 0x04, 0x55, 0x55,
+var file_spincomm_proto_rawDesc = []byte{
+	0x0a, 0x0e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f,
+	0x12, 0x08, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x22, 0x1c, 0x0a, 0x04, 0x55, 0x55,
 	0x49, 0x44, 0x12, 0x14, 0x0a, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x05, 0x76, 0x61, 0x6c, 0x75, 0x65, 0x22, 0x3c, 0x0a, 0x0b, 0x4a, 0x6f, 0x69, 0x6e,
 	0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x2d, 0x0a, 0x0a, 0x63, 0x61, 0x70, 0x74, 0x61,
 	0x69, 0x6e, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70,
-	0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x09, 0x63, 0x61, 0x70,
+	0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x09, 0x63, 0x61, 0x70,
 	0x74, 0x61, 0x69, 0x6e, 0x49, 0x64, 0x22, 0x36, 0x0a, 0x0b, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x27, 0x0a, 0x07, 0x74, 0x61, 0x73, 0x6b, 0x5f, 0x69, 0x64,
-	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73,
-	0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64, 0x22, 0x44,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b, 0x49, 0x64, 0x22, 0x44,
 	0x0a, 0x07, 0x54, 0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x12, 0x27, 0x0a, 0x07, 0x74, 0x61, 0x73,
 	0x6b, 0x5f, 0x69, 0x64, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0e, 0x2e, 0x73, 0x70, 0x69,
-	0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b,
+	0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x55, 0x55, 0x49, 0x44, 0x52, 0x06, 0x74, 0x61, 0x73, 0x6b,
 	0x49, 0x64, 0x12, 0x10, 0x0a, 0x03, 0x6c, 0x6f, 0x67, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52,
 	0x03, 0x6c, 0x6f, 0x67, 0x22, 0x10, 0x0a, 0x0e, 0x54, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x6d, 0x70,
 	0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e, 0x32, 0xb0, 0x01, 0x0a, 0x07, 0x53, 0x70, 0x69, 0x6e, 0x6e,
 	0x65, 0x72, 0x12, 0x38, 0x0a, 0x06, 0x41, 0x74, 0x74, 0x61, 0x63, 0x68, 0x12, 0x15, 0x2e, 0x73,
-	0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75,
-	0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54,
+	0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x4a, 0x6f, 0x69, 0x6e, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x1a, 0x15, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x54,
 	0x61, 0x73, 0x6b, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x30, 0x01, 0x12, 0x34, 0x0a, 0x03,
-	0x52, 0x75, 0x6e, 0x12, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54,
-	0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x1a, 0x18, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73,
-	0x70, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e,
+	0x52, 0x75, 0x6e, 0x12, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x54,
+	0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x1a, 0x18, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d,
+	0x6d, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x43, 0x6f, 0x6d, 0x70, 0x6c, 0x65, 0x74, 0x69, 0x6f, 0x6e,
 	0x28, 0x01, 0x12, 0x35, 0x0a, 0x07, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x15, 0x2e,
-	0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
-	0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70, 0x2e,
+	0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e, 0x54, 0x61, 0x73, 0x6b, 0x52, 0x65, 0x71,
+	0x75, 0x65, 0x73, 0x74, 0x1a, 0x11, 0x2e, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d, 0x2e,
 	0x54, 0x61, 0x73, 0x6b, 0x4c, 0x6f, 0x67, 0x30, 0x01, 0x42, 0x35, 0x5a, 0x33, 0x67, 0x69, 0x74,
 	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x43, 0x6f, 0x64, 0x79, 0x50, 0x65, 0x72, 0x61,
 	0x6b, 0x73, 0x6c, 0x69, 0x73, 0x2f, 0x61, 0x72, 0x6d, 0x61, 0x64, 0x61, 0x6e, 0x65, 0x74, 0x2f,
-	0x73, 0x70, 0x69, 0x6e, 0x6e, 0x65, 0x72, 0x2f, 0x73, 0x70, 0x69, 0x6e, 0x72, 0x65, 0x73, 0x70,
+	0x73, 0x70, 0x69, 0x6e, 0x6e, 0x65, 0x72, 0x2f, 0x73, 0x70, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x6d,
 	0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
-	file_spinresp_proto_rawDescOnce sync.Once
-	file_spinresp_proto_rawDescData = file_spinresp_proto_rawDesc
+	file_spincomm_proto_rawDescOnce sync.Once
+	file_spincomm_proto_rawDescData = file_spincomm_proto_rawDesc
 )
 
-func file_spinresp_proto_rawDescGZIP() []byte {
-	file_spinresp_proto_rawDescOnce.Do(func() {
-		file_spinresp_proto_rawDescData = protoimpl.X.CompressGZIP(file_spinresp_proto_rawDescData)
+func file_spincomm_proto_rawDescGZIP() []byte {
+	file_spincomm_proto_rawDescOnce.Do(func() {
+		file_spincomm_proto_rawDescData = protoimpl.X.CompressGZIP(file_spincomm_proto_rawDescData)
 	})
-	return file_spinresp_proto_rawDescData
+	return file_spincomm_proto_rawDescData
 }
 
-var file_spinresp_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
-var file_spinresp_proto_goTypes = []interface{}{
-	(*UUID)(nil),           // 0: spinresp.UUID
-	(*JoinRequest)(nil),    // 1: spinresp.JoinRequest
-	(*TaskRequest)(nil),    // 2: spinresp.TaskRequest
-	(*TaskLog)(nil),        // 3: spinresp.TaskLog
-	(*TaskCompletion)(nil), // 4: spinresp.TaskCompletion
+var file_spincomm_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_spincomm_proto_goTypes = []interface{}{
+	(*UUID)(nil),           // 0: spincomm.UUID
+	(*JoinRequest)(nil),    // 1: spincomm.JoinRequest
+	(*TaskRequest)(nil),    // 2: spincomm.TaskRequest
+	(*TaskLog)(nil),        // 3: spincomm.TaskLog
+	(*TaskCompletion)(nil), // 4: spincomm.TaskCompletion
 }
-var file_spinresp_proto_depIdxs = []int32{
-	0, // 0: spinresp.JoinRequest.captain_id:type_name -> spinresp.UUID
-	0, // 1: spinresp.TaskRequest.task_id:type_name -> spinresp.UUID
-	0, // 2: spinresp.TaskLog.task_id:type_name -> spinresp.UUID
-	1, // 3: spinresp.Spinner.Attach:input_type -> spinresp.JoinRequest
-	3, // 4: spinresp.Spinner.Run:input_type -> spinresp.TaskLog
-	2, // 5: spinresp.Spinner.Request:input_type -> spinresp.TaskRequest
-	2, // 6: spinresp.Spinner.Attach:output_type -> spinresp.TaskRequest
-	4, // 7: spinresp.Spinner.Run:output_type -> spinresp.TaskCompletion
-	3, // 8: spinresp.Spinner.Request:output_type -> spinresp.TaskLog
+var file_spincomm_proto_depIdxs = []int32{
+	0, // 0: spincomm.JoinRequest.captain_id:type_name -> spincomm.UUID
+	0, // 1: spincomm.TaskRequest.task_id:type_name -> spincomm.UUID
+	0, // 2: spincomm.TaskLog.task_id:type_name -> spincomm.UUID
+	1, // 3: spincomm.Spinner.Attach:input_type -> spincomm.JoinRequest
+	3, // 4: spincomm.Spinner.Run:input_type -> spincomm.TaskLog
+	2, // 5: spincomm.Spinner.Request:input_type -> spincomm.TaskRequest
+	2, // 6: spincomm.Spinner.Attach:output_type -> spincomm.TaskRequest
+	4, // 7: spincomm.Spinner.Run:output_type -> spincomm.TaskCompletion
+	3, // 8: spincomm.Spinner.Request:output_type -> spincomm.TaskLog
 	6, // [6:9] is the sub-list for method output_type
 	3, // [3:6] is the sub-list for method input_type
 	3, // [3:3] is the sub-list for extension type_name
@@ -337,13 +337,13 @@ var file_spinresp_proto_depIdxs = []int32{
 	0, // [0:3] is the sub-list for field type_name
 }
 
-func init() { file_spinresp_proto_init() }
-func file_spinresp_proto_init() {
-	if File_spinresp_proto != nil {
+func init() { file_spincomm_proto_init() }
+func file_spincomm_proto_init() {
+	if File_spincomm_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_spinresp_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_spincomm_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UUID); i {
 			case 0:
 				return &v.state
@@ -355,7 +355,7 @@ func file_spinresp_proto_init() {
 				return nil
 			}
 		}
-		file_spinresp_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_spincomm_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*JoinRequest); i {
 			case 0:
 				return &v.state
@@ -367,7 +367,7 @@ func file_spinresp_proto_init() {
 				return nil
 			}
 		}
-		file_spinresp_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_spincomm_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TaskRequest); i {
 			case 0:
 				return &v.state
@@ -379,7 +379,7 @@ func file_spinresp_proto_init() {
 				return nil
 			}
 		}
-		file_spinresp_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_spincomm_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TaskLog); i {
 			case 0:
 				return &v.state
@@ -391,7 +391,7 @@ func file_spinresp_proto_init() {
 				return nil
 			}
 		}
-		file_spinresp_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_spincomm_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*TaskCompletion); i {
 			case 0:
 				return &v.state
@@ -408,20 +408,20 @@ func file_spinresp_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_spinresp_proto_rawDesc,
+			RawDescriptor: file_spincomm_proto_rawDesc,
 			NumEnums:      0,
 			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_spinresp_proto_goTypes,
-		DependencyIndexes: file_spinresp_proto_depIdxs,
-		MessageInfos:      file_spinresp_proto_msgTypes,
+		GoTypes:           file_spincomm_proto_goTypes,
+		DependencyIndexes: file_spincomm_proto_depIdxs,
+		MessageInfos:      file_spincomm_proto_msgTypes,
 	}.Build()
-	File_spinresp_proto = out.File
-	file_spinresp_proto_rawDesc = nil
-	file_spinresp_proto_goTypes = nil
-	file_spinresp_proto_depIdxs = nil
+	File_spincomm_proto = out.File
+	file_spincomm_proto_rawDesc = nil
+	file_spincomm_proto_goTypes = nil
+	file_spincomm_proto_depIdxs = nil
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -450,7 +450,7 @@ func NewSpinnerClient(cc grpc.ClientConnInterface) SpinnerClient {
 }
 
 func (c *spinnerClient) Attach(ctx context.Context, in *JoinRequest, opts ...grpc.CallOption) (Spinner_AttachClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[0], "/spinresp.Spinner/Attach", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[0], "/spincomm.Spinner/Attach", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -482,7 +482,7 @@ func (x *spinnerAttachClient) Recv() (*TaskRequest, error) {
 }
 
 func (c *spinnerClient) Run(ctx context.Context, opts ...grpc.CallOption) (Spinner_RunClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[1], "/spinresp.Spinner/Run", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[1], "/spincomm.Spinner/Run", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -516,7 +516,7 @@ func (x *spinnerRunClient) CloseAndRecv() (*TaskCompletion, error) {
 }
 
 func (c *spinnerClient) Request(ctx context.Context, in *TaskRequest, opts ...grpc.CallOption) (Spinner_RequestClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[2], "/spinresp.Spinner/Request", opts...)
+	stream, err := c.cc.NewStream(ctx, &_Spinner_serviceDesc.Streams[2], "/spincomm.Spinner/Request", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -641,7 +641,7 @@ func (x *spinnerRequestServer) Send(m *TaskLog) error {
 }
 
 var _Spinner_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "spinresp.Spinner",
+	ServiceName: "spincomm.Spinner",
 	HandlerType: (*SpinnerServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
@@ -661,5 +661,5 @@ var _Spinner_serviceDesc = grpc.ServiceDesc{
 			ServerStreams: true,
 		},
 	},
-	Metadata: "spinresp.proto",
+	Metadata: "spincomm.proto",
 }

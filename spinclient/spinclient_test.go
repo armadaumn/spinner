@@ -3,11 +3,11 @@ package spinclient_test
 import (
 	"testing"
 	"github.com/armadanet/spinner/spinclient"
-	"github.com/armadanet/spinner/spinresp"
+	"github.com/armadanet/spinner/spincomm"
 )
 
 func TestMalformedClient(t *testing.T) {
-	req := &spinresp.JoinRequest{
+	req := &spincomm.JoinRequest{
 		CaptainId: nil,
 	}
 	_, err := spinclient.RequestClient(req, nil)
@@ -23,8 +23,8 @@ func TestMalformedClient(t *testing.T) {
 }
 
 func TestWellformedClient(t *testing.T) {
-	req := &spinresp.JoinRequest{
-		CaptainId: &spinresp.UUID{
+	req := &spincomm.JoinRequest{
+		CaptainId: &spincomm.UUID{
 			Value: "fake_id",
 		},
 	}
