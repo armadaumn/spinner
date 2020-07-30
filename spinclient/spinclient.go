@@ -24,16 +24,16 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 	c := &client{
 		id: request.GetCaptainId().GetValue(),
 		stream: stream, 
-		err: errors.New("Not yet initialized"),
+		taskchan: make(chan *spincomm.TaskRequest),
 	}
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
 			err: "No Client ID given",
 		}
 	}
-	completed := make(chan bool)
-	go c.run(ctx, completed)
-	<- completed
+	ctx, cancel := context.WithCancel(ctx)
+	c.cancel = cancel
+	go c.run(ctx)
 
 	return c, nil
 }
@@ -53,18 +53,9 @@ func (c *client) SendTask(task *spincomm.TaskRequest) error {
 	return nil
 }
 
-func (c *client) run(ctx context.Context, completed chan bool) {
-	if c.cancel != nil {c.cancel()}
-	ctx, cancel := context.WithCancel(ctx)
-
-	defer cancel()
-	c.cancel = cancel
-	c.taskchan = make(chan *spincomm.TaskRequest, 2)
-
+func (c *client) run(ctx context.Context) {
+	defer c.cancel()
 	log.Println("Ready for tasks")
-	c.err = nil
-	close(completed)
-
 	for {
 		select {
 		case task, ok := <- c.taskchan:
