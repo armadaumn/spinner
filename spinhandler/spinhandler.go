@@ -14,7 +14,7 @@ type handler struct {
 }
 
 type Handler interface{
-	AddClient(request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) error
+	AddClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) error
 	RemoveClient(id string) error
 	ChooseClient(ch Chooser) (string, error)
 	ListClientIds() []string

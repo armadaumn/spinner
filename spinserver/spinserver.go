@@ -5,9 +5,10 @@ import (
 	"google.golang.org/grpc"
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler"
-	"golang.org/x/sync/errgroup"
+	"context"
 	"log"
 	"time"
+	"strconv"
   )
 
 
@@ -38,15 +39,21 @@ type spinnerserver struct {
 		log.Println("No captain")
 		return nil
 	}
+	i := 1
 	for {
 		t := &spincomm.TaskRequest{
 			TaskId: &spincomm.UUID{
-				Value: "simple_task",
+				Value: "simple_task_" + strconv.Itoa(i),
 			},
 		}
-		cl.SendTask(t)
+		err := cl.SendTask(t)
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		log.Println("Task sent:", i)
 		time.Sleep(2*time.Second)
-		break
+		i += 1
 	}
 	return nil
   }
