@@ -1,10 +1,10 @@
 package spinhandler
 
 import (
-	"github.com/armadanet/spinner/spincomm"
+	// "github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinclient"
 	"sync"
-	"context"
+	// "context"
 	// "errors"
 )
 
@@ -14,7 +14,7 @@ type handler struct {
 }
 
 type Handler interface{
-	AddClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) error
+	AddClient(client spinclient.Client) error
 	RemoveClient(id string) error
 	ChooseClient(ch Chooser) (string, error)
 	ListClientIds() []string
@@ -29,10 +29,8 @@ func New() Handler {
 	}
 }
 
-func (h *handler) AddClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) error {
-	client, err := spinclient.RequestClient(ctx, request, stream)
-	if err != nil {return err}
-	err = h.clientmap.add(client)
+func (h *handler) AddClient(client spinclient.Client) error {
+	err := h.clientmap.add(client)
 	return err
 }
 

@@ -2,7 +2,6 @@
 package spinner
 
 import (
-  "google.golang.org/grpc"
   "github.com/armadanet/spinner/spinserver"
   "net"
   "log"
@@ -15,14 +14,14 @@ import (
 )
 
 func CreateAndServe() error {
-  server := spinserver.New()
   ctx := context.Background()
-  return GracefulListen(ctx, server, 5912)
+  return GracefulListen(ctx,  5912)
 }
 
-func GracefulListen(ctx context.Context, server *grpc.Server, port int) error {
+func GracefulListen(ctx context.Context, port int) error {
   ctx, cancel := context.WithCancel(ctx)
   defer cancel()
+  server := spinserver.New(ctx)
   g, ctx := errgroup.WithContext(ctx)
 
   interrupt := make(chan os.Signal, 1)
