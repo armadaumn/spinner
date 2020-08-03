@@ -1,10 +1,11 @@
 package spinhandler
 
 import (
-	"github.com/armadanet/spinner/spinresp"
+	// "github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinclient"
 	"sync"
-	"errors"
+	// "context"
+	// "errors"
 )
 
 type handler struct {
@@ -13,9 +14,11 @@ type handler struct {
 }
 
 type Handler interface{
-	AddClient(request *spinresp.JoinRequest) error
+	AddClient(client spinclient.Client) error
 	RemoveClient(id string) error
 	ChooseClient(ch Chooser) (string, error)
+	ListClientIds() []string
+	GetClient(id string) (spinclient.Client, bool)
 	// ConnectClient(id string) error
 }
 
@@ -26,10 +29,8 @@ func New() Handler {
 	}
 }
 
-func (h *handler) AddClient(request *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) error {
-	client, err := RequestClient(request, stream)
-	if err != nil {return err}
-	err = h.clientmap.add(client)
+func (h *handler) AddClient(client spinclient.Client) error {
+	err := h.clientmap.add(client)
 	return err
 }
 
@@ -45,5 +46,14 @@ func (h *handler) UpdateClient(req *pb.NodeInfo) (*pb.PingResp, error) {
 }
 
 func (h *handler) ChooseClient(ch Chooser) (string, error) {
-	return Chooser.F(h.clientmap)
+	return ch.F(h.clientmap)
 }
+
+func (h *handler) ListClientIds() []string {
+	return h.clientmap.Keys()
+}
+
+func (h *handler) GetClient(id string) (spinclient.Client, bool) {
+	return h.clientmap.Get(id)
+}
+

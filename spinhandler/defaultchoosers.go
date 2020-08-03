@@ -1,7 +1,7 @@
 package spinhandler
 
 import (
-	"github.com/armadanet/client"
+	// "github.com/armadanet/spinner/spinclient"
 	"sort"
 	"errors"
 )
@@ -15,7 +15,8 @@ func (r *RoundRobinChooser) F (c ClientMap) (string, error) {
 		r.LastChoice = ""
 		return "", errors.New("No clients available")
 	}
-	clients := sort.Strings(c.Keys())
+	clients := c.Keys()
+	sort.Strings(clients)
 	for _, v := range clients {
 		if v > r.LastChoice {
 			r.LastChoice = v

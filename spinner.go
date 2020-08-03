@@ -2,35 +2,52 @@
 package spinner
 
 import (
-  // "google.golang.org/grpc"
-  "github.com/armadanet/spinner/spinresp"
-  "github.com/armadanet/spinner/spinhandler"
+  "github.com/armadanet/spinner/spinserver"
+  "net"
+  "log"
+  "strconv"
+  "context"
+  "os"
+  "os/signal"
+  "syscall"
+  "golang.org/x/sync/errgroup"
 )
 
-type spinnerserver struct {
-  spinresp.UnimplementedSpinnerServer
-  handler     *spinhandler.Handler
+func CreateAndServe() error {
+  ctx := context.Background()
+  return GracefulListen(ctx,  5912)
 }
 
-func New() spinresp.SpinnerServer {
-  return &spinnerserver{
-    handler: spinhandler.New(),
+func GracefulListen(ctx context.Context, port int) error {
+  ctx, cancel := context.WithCancel(ctx)
+  defer cancel()
+  server := spinserver.New(ctx)
+  g, ctx := errgroup.WithContext(ctx)
+
+  interrupt := make(chan os.Signal, 1)
+  signal.Notify(interrupt, syscall.SIGINT, syscall.SIGTERM)
+  defer signal.Stop(interrupt)
+
+  g.Go(func() error {
+    portVal := ":" + strconv.Itoa(port)
+    lis, err := net.Listen("tcp", portVal)
+    if err != nil {return err}
+    log.Printf("Listening on TCP port %d\n", port)
+
+    return server.Serve(lis)
+  })
+  
+  select {
+  case <-interrupt:
+    break
+  case <-ctx.Done():
+    break
   }
-}
 
-func (s *spinnerserver) Attach(req *spinresp.JoinRequest, stream spinresp.Spinner_AttachServer) error {
-  if err := s.handler.AddClient(req, stream); err != nil {
-    return err
-  }
-  return nil
-}
+  log.Println("Shutting Down Server")
+  cancel()
+  server.GracefulStop()
 
-func (s *spinnerserver) ReportStatus(ctx context.Context, req *pb.NodeInfo) (*pb.PingResp, error) {
-  resp := pb.PingResp{}
-  if err := s.handler.UpdateClient(req); err != nil {
-    resp.value = false
-    return resp, err
-  } 
-  resp.value = true
-  return resp, nil
+  err := g.Wait()
+  return err
 }
