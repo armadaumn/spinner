@@ -3,6 +3,7 @@ package spinhandler
 import (
 	// "github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinclient"
+	"github.com/armadanet/spinner/spincomm"
 	"sync"
 	// "context"
 	// "errors"
@@ -39,12 +40,6 @@ func (h *handler) RemoveClient(id string) error {
 	return err
 }
 
-func (h *handler) UpdateClient(req *pb.NodeInfo) (*pb.PingResp, error) {
-	id := req.GetCaptainId().GetValue()
-	err := h.clientmap.update(id)
-	return err
-}
-
 func (h *handler) ChooseClient(ch Chooser) (string, error) {
 	return ch.F(h.clientmap)
 }
@@ -55,5 +50,9 @@ func (h *handler) ListClientIds() []string {
 
 func (h *handler) GetClient(id string) (spinclient.Client, bool) {
 	return h.clientmap.Get(id)
+}
+
+func (h *handler) UpdateCLient(id string, status spincomm.TaskRequest) error {
+	return h.clientmap.update(id, status)
 }
 

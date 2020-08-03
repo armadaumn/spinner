@@ -5,15 +5,13 @@ go 1.13
 //replace github.com/armadanet/comms => /Users/lh/Desktop/go/src/github.com/armadanet/comms
 
 //replace github.com/armadanet/captain/dockercntrl => /Users/lh/Desktop/go/src/github.com/armadanet/captain/dockercntrl
+replace github.com/armadanet/spinner => /Users/zhiyingliang/Documents/armada/spinner
 
 require (
-	github.com/armadanet/captain/dockercntrl v0.0.0-20200528074631-abe3500b4269
-	github.com/armadanet/comms v0.0.0-20200528090635-3089ce4375d7
 	github.com/golang/protobuf v1.4.2
-	github.com/google/uuid v1.1.1
-	github.com/gorilla/mux v1.7.3
-	github.com/gorilla/websocket v1.4.2 // indirect
-	github.com/phayes/freeport v0.0.0-20180830031419-95f893ade6f2
+	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
+	golang.org/x/sync v0.0.0-20190423024810-112230192c58
+	golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0
 )

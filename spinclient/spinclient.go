@@ -14,12 +14,15 @@ type client struct {
 	taskchan	chan *spincomm.TaskRequest
 	err			error
 	ctx			context.Context
+	info        nodeInfo
 }
 
 type Client interface {
 	Id() string
 	SendTask(task *spincomm.TaskRequest) error
-	Run() error 
+	Run() error
+	Info() nodeInfo
+	UpdateStatus(status *spincomm.TaskRequest) error
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -29,7 +32,8 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		stream: stream, 
 		taskchan: make(chan *spincomm.TaskRequest),
 		cancel: cancel,
-		ctx: ctx, 
+		ctx: ctx,
+		info: nodeInfo{},
 	}
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
@@ -81,4 +85,12 @@ func (c *client) Run() error {
 			return c.err 
 		}
 	}
+}
+
+func (c *client) Info() nodeInfo {
+	return c.info
+}
+
+func (c *client) UpdateStatus(status *spincomm.TaskRequest) error {
+
 }

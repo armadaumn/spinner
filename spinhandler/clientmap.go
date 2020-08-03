@@ -2,6 +2,7 @@ package spinhandler
 
 import (
 	"github.com/armadanet/spinner/spinclient"
+	"github.com/armadanet/spinner/spincomm"
 	"sync"
 	"errors"
 )
@@ -67,12 +68,12 @@ func (cm *clientmap) remove(id string) error {
 	return nil
 }
 
-func (cm *clientmap) update(id string, req *pb.NodeInfo) error {
+func (cm *clientmap) update(id string, status *spincomm.TaskRequest) error {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
-	if _, ok := cm.clients[id]; !ok {
+	client, ok := cm.clients[id]
+	if !ok {
 		return errors.New("No such client")
 	}
-	cm.clients[id].info.status = req
-	return nil
+	return client.UpdateStatus(status)
 }
