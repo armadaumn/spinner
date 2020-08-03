@@ -20,6 +20,7 @@ message JoinRequest {
 
 message TaskRequest {
     UUID task_id = 1;
+    TaskSpec taskspec = 2;
 }
 
 message TaskLog {
@@ -28,4 +29,44 @@ message TaskLog {
 }
 
 message TaskCompletion {
+}
+
+message ResourceStatus {
+    int64 total = 1;
+    int64 assigned = 2;
+    int64 unassigned = 3;
+    double available = 4;
+}
+
+message HostRC {
+    ResourceStatus CPU = 1;
+    ResourceStatus Memory = 2;
+    string GPU = 3;
+}
+
+message ContainerStatus {
+    repeated string activeContainer = 1;
+    repeated string images = 2;
+}
+
+message NodeInfo {
+    UUID captain_id = 1;
+    map<string, ResourceStatus> host_resource = 2;
+    repeated string used_ports = 3;
+    ContainerStatus container_status = 4;
+}
+
+message TaskSpec {
+    repeated string Filters = 1;
+    string  Sort = 2;
+    map<string, ResourceRequirement> ResourceMap = 3;
+    map<string, string> Ports = 4;
+    bool IsPublic = 5;
+    int64 NumReplicas =6;
+}
+
+message ResourceRequirement {
+    int64 Requested = 1;
+    double Weight = 2;
+    bool Required = 3;
 }
