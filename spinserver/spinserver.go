@@ -81,3 +81,15 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 	return err
 }
 
+func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (*spincomm.PingResp, error) {
+	err := s.handler.UpdateCLient(status)
+	resp := spincomm.PingResp{
+		Status: true,
+	}
+	if err != nil {
+		resp.Status = false
+		return &resp, err
+	}
+	return &resp, nil
+}
+

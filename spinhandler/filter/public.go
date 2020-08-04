@@ -2,13 +2,13 @@ package filter
 
 import (
 	"github.com/armadanet/spinner/spinclient"
-	task "github.com/armadanet/spinner/spinhandler/taskrequirement"
+	"github.com/armadanet/spinner/spincomm"
 )
 
 type PublicFilter struct {
 }
 
-func (f *PublicFilter) FilterNode(tq task.TaskRequirement, clients map[string]spinclient.Client) error {
+func (f *PublicFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
 	for id, client := range clients {
 		if len(client.Info().OpenPorts) == 0 {
 			delete(clients, id)

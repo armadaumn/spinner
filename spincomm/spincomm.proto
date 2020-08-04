@@ -8,6 +8,7 @@ service Spinner {
     rpc Attach (JoinRequest) returns (stream TaskRequest);
     rpc Run (stream TaskLog) returns (TaskCompletion); 
     rpc Request (TaskRequest) returns (stream TaskLog);
+    rpc Update (NodeInfo) returns (PingResp);
 }
 
 message UUID {
@@ -69,4 +70,8 @@ message ResourceRequirement {
     int64 Requested = 1;
     double Weight = 2;
     bool Required = 3;
+}
+
+message PingResp {
+    bool status = 1;
 }

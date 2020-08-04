@@ -68,9 +68,10 @@ func (cm *clientmap) remove(id string) error {
 	return nil
 }
 
-func (cm *clientmap) update(id string, status *spincomm.TaskRequest) error {
+func (cm *clientmap) update(status *spincomm.NodeInfo) error {
 	cm.mutex.Lock()
 	defer cm.mutex.Unlock()
+	id := status.GetCaptainId().Value
 	client, ok := cm.clients[id]
 	if !ok {
 		return errors.New("No such client")

@@ -1,7 +1,7 @@
 package sort
 
 import (
-	task "github.com/armadanet/spinner/spinhandler/taskrequirement"
+	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinclient"
 	"sort"
 )
@@ -10,7 +10,7 @@ type LeastRecSort struct {
 
 }
 
-func (s *LeastRecSort) SortNode(tq task.TaskRequirement, clients map[string]spinclient.Client, soft bool) []string {
+func (s *LeastRecSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client, soft bool) []string {
 	result := make([]struct {
 		id    string
 		score float64
@@ -20,7 +20,7 @@ func (s *LeastRecSort) SortNode(tq task.TaskRequirement, clients map[string]spin
 		var score, weightSum float64
 		for res, requirement := range tq.ResourceMap {
 			var avail float64
-			resStatus := client.Info().Status.HostResource[res]
+			resStatus := client.Info().HostResource[res]
 			if soft {
 				avail = resStatus.Available
 			} else {

@@ -2,14 +2,14 @@ package filter
 
 import (
 	"github.com/armadanet/spinner/spinclient"
-	task "github.com/armadanet/spinner/spinhandler/taskrequirement"
+	"github.com/armadanet/spinner/spincomm"
 )
 
 type SoftResFilter struct {
 
 }
 
-func (f *SoftResFilter) FilterNode(tq task.TaskRequirement, clients map[string]spinclient.Client) error {
+func (f *SoftResFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
 	// Do soft filtering
 	for id, client := range clients {
 		isSufficient := true

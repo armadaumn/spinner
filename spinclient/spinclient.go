@@ -22,7 +22,7 @@ type Client interface {
 	SendTask(task *spincomm.TaskRequest) error
 	Run() error
 	Info() nodeInfo
-	UpdateStatus(status *spincomm.TaskRequest) error
+	UpdateStatus(status *spincomm.NodeInfo) error
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -33,7 +33,9 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		taskchan: make(chan *spincomm.TaskRequest),
 		cancel: cancel,
 		ctx: ctx,
-		info: nodeInfo{},
+		info: nodeInfo{
+			HostResource: make(map[string]*spincomm.ResourceStatus),
+		},
 	}
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
@@ -91,6 +93,13 @@ func (c *client) Info() nodeInfo {
 	return c.info
 }
 
-func (c *client) UpdateStatus(status *spincomm.TaskRequest) error {
-
+func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
+	//TODO: Remove testing output information
+	log.Println("before:", c.info)
+	c.info.UsedPorts = status.GetUsedPorts()
+	c.info.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
+	c.info.Images = status.GetContainerStatus().GetImages()
+	c.info.HostResource = status.GetHostResource()
+	log.Println("after:", c.info)
+	return nil
 }

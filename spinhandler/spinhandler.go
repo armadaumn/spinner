@@ -21,6 +21,7 @@ type Handler interface{
 	ListClientIds() []string
 	GetClient(id string) (spinclient.Client, bool)
 	// ConnectClient(id string) error
+	UpdateCLient(status *spincomm.NodeInfo) error
 }
 
 func New() Handler {
@@ -52,7 +53,7 @@ func (h *handler) GetClient(id string) (spinclient.Client, bool) {
 	return h.clientmap.Get(id)
 }
 
-func (h *handler) UpdateCLient(id string, status spincomm.TaskRequest) error {
-	return h.clientmap.update(id, status)
+func (h *handler) UpdateCLient(status *spincomm.NodeInfo) error {
+	return h.clientmap.update(status)
 }
 

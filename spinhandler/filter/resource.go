@@ -2,7 +2,7 @@ package filter
 
 import (
 	"github.com/armadanet/spinner/spinclient"
-	task "github.com/armadanet/spinner/spinhandler/taskrequirement"
+	"github.com/armadanet/spinner/spincomm"
 	"errors"
 	"log"
 )
@@ -17,7 +17,7 @@ type ResourceFilter struct {
 //	}, nil
 //}
 
-func (f *ResourceFilter) FilterNode(tq task.TaskRequirement, clients map[string]spinclient.Client) error {
+func (f *ResourceFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
 	//hard resource filtering
 	newclients := make(map[string]spinclient.Client)
 	for k, v := range clients {

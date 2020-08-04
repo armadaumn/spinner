@@ -1,11 +1,11 @@
 package spinhandler
 
 import (
+	"errors"
 	"github.com/armadanet/spinner/spinclient"
+	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler/filter"
 	"github.com/armadanet/spinner/spinhandler/sort"
-	task "github.com/armadanet/spinner/spinhandler/taskrequirement"
-	"errors"
 )
 
 type CustomChooser struct {
@@ -29,7 +29,7 @@ func InitCustomChooser() CustomChooser {
 	return chooser
 }
 
-func (r *CustomChooser) F(c *clientmap, tq task.TaskRequirement) (string, error) {
+func (r *CustomChooser) F(c *clientmap, tq *spincomm.TaskRequest) (string, error) {
 	clients := c.clients
 	newclients := make(map[string]spinclient.Client)
 	for k, v := range clients {
@@ -42,12 +42,13 @@ func (r *CustomChooser) F(c *clientmap, tq task.TaskRequirement) (string, error)
 		ErrNoNode = errors.New("no nodes")
 	)
 
-	for _, f := range tq.Filters {
-		err = r.filters[f].FilterNode(tq, newclients)
+	filterPlugins := tq.GetTaskspec().GetFilters()
+	for _, f := range filterPlugins {
+		err = r.filters[f].FilterNode(tq.GetTaskspec(), newclients)
 
 		if err.Error() == ErrNoNode.Error() {
 			soft = true
-			r.filters["SoftResource"].FilterNode(tq, clients)
+			r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), clients)
 		} else if err != nil {
 			return "", err
 		}
@@ -57,6 +58,7 @@ func (r *CustomChooser) F(c *clientmap, tq task.TaskRequirement) (string, error)
 			return "", err
 		}
 	}
-	sortResult := r.sort[tq.Sort].SortNode(tq, newclients, soft)
+	sortPlugin := tq.GetTaskspec().GetSort()
+	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
 	return sortResult[0], nil
 }
