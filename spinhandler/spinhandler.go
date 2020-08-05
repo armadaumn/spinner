@@ -17,11 +17,11 @@ type handler struct {
 type Handler interface{
 	AddClient(client spinclient.Client) error
 	RemoveClient(id string) error
-	ChooseClient(ch Chooser) (string, error)
+	ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, error)
 	ListClientIds() []string
 	GetClient(id string) (spinclient.Client, bool)
 	// ConnectClient(id string) error
-	UpdateCLient(status *spincomm.NodeInfo) error
+	UpdateClient(status *spincomm.NodeInfo) error
 }
 
 func New() Handler {
@@ -41,8 +41,8 @@ func (h *handler) RemoveClient(id string) error {
 	return err
 }
 
-func (h *handler) ChooseClient(ch Chooser) (string, error) {
-	return ch.F(h.clientmap)
+func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, error) {
+	return ch.F(h.clientmap, req)
 }
 
 func (h *handler) ListClientIds() []string {
@@ -53,7 +53,7 @@ func (h *handler) GetClient(id string) (spinclient.Client, bool) {
 	return h.clientmap.Get(id)
 }
 
-func (h *handler) UpdateCLient(status *spincomm.NodeInfo) error {
+func (h *handler) UpdateClient(status *spincomm.NodeInfo) error {
 	return h.clientmap.update(status)
 }
 

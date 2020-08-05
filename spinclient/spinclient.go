@@ -95,7 +95,7 @@ func (c *client) Info() nodeInfo {
 
 func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	//TODO: Remove testing output information
-	log.Println("before:", c.info)
+	//log.Println("before:", c.info)
 	c.info.UsedPorts = status.GetUsedPorts()
 	c.info.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
 	c.info.Images = status.GetContainerStatus().GetImages()

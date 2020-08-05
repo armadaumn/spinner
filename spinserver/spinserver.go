@@ -24,12 +24,12 @@ type spinnerserver struct {
   }
   
 func New(ctx context.Context) *grpc.Server {
+	chooser := spinhandler.InitCustomChooser()
 	s := &spinnerserver{
 	  handler: spinhandler.New(),
 	  ctx: ctx, 
-	  chooser: &spinhandler.RoundRobinChooser{
-		  LastChoice: "",
-	  },
+	  chooser: &chooser,
+	  router: make(map[string]spincomm.Spinner_RequestServer),
 	}
 	grpcServer := grpc.NewServer()
 	spincomm.RegisterSpinnerServer(grpcServer, s)
@@ -42,7 +42,7 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 		return errors.New("No task id given")
 	}
 	s.router[id] = stream
-	cid, err := s.handler.ChooseClient(s.chooser)
+	cid, err := s.handler.ChooseClient(s.chooser, req)
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
 	if !ok {return errors.New("No such client")}
@@ -77,12 +77,13 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 	}
 	
 	err = cl.Run()
+	//TODO: handling error
 	log.Println(err)
 	return err
 }
 
 func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (*spincomm.PingResp, error) {
-	err := s.handler.UpdateCLient(status)
+	err := s.handler.UpdateClient(status)
 	resp := spincomm.PingResp{
 		Status: true,
 	}

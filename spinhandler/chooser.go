@@ -1,5 +1,7 @@
 package spinhandler
 
+import "github.com/armadanet/spinner/spincomm"
+
 type Chooser interface {
-	F(ClientMap) (string, error)
+	F(ClientMap, *spincomm.TaskRequest) (string, error)
 }

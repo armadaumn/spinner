@@ -29,11 +29,10 @@ func InitCustomChooser() CustomChooser {
 	return chooser
 }
 
-func (r *CustomChooser) F(c *clientmap, tq *spincomm.TaskRequest) (string, error) {
-	clients := c.clients
+func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, error) {
 	newclients := make(map[string]spinclient.Client)
-	for k, v := range clients {
-		newclients[k] = v
+	for _, k := range c.Keys() {
+		newclients[k], _ = c.Get(k)
 	}
 
 	var (
@@ -46,11 +45,13 @@ func (r *CustomChooser) F(c *clientmap, tq *spincomm.TaskRequest) (string, error
 	for _, f := range filterPlugins {
 		err = r.filters[f].FilterNode(tq.GetTaskspec(), newclients)
 
-		if err.Error() == ErrNoNode.Error() {
-			soft = true
-			r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), clients)
-		} else if err != nil {
-			return "", err
+		if err != nil {
+			if err.Error() == ErrNoNode.Error() {
+				soft = true
+				r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), newclients)
+			} else {
+				return "", err
+			}
 		}
 
 		if len(newclients) == 0 {
@@ -60,5 +61,11 @@ func (r *CustomChooser) F(c *clientmap, tq *spincomm.TaskRequest) (string, error
 	}
 	sortPlugin := tq.GetTaskspec().GetSort()
 	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
-	return sortResult[0], nil
+	//TODO: double check
+	for _, id := range sortResult {
+		if _, ok := c.Get(id); ok {
+			return id, nil
+		}
+	}
+	return "", errors.New("no node")
 }
