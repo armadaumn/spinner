@@ -19,9 +19,20 @@ message JoinRequest {
     UUID captain_id = 1;
 }
 
+message TaskLimits {
+    int64 cpu_shares = 1;
+}
+
 message TaskRequest {
     UUID task_id = 1;
-    TaskSpec taskspec = 2;
+    string image = 2;
+    repeated string command = 3;
+    bool tty = 4;
+    string name = 5;
+    repeated string env = 6;
+    int64 port = 7;
+    TaskLimits limits = 8;
+    TaskSpec taskspec = 9;
 }
 
 message TaskLog {

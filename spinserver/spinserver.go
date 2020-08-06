@@ -15,21 +15,33 @@ import (
 )
 
 
+type spinrequest struct {
+	stream 		spincomm.Spinner_RequestServer
+	complete	func()
+}
+
+func NewRequest(stream spincomm.Spinner_RequestServer, cancel func()) *spinrequest {
+	return &spinrequest{
+		stream: stream,
+		complete: cancel, 
+	}
+}
+
 type spinnerserver struct {
 	spincomm.UnimplementedSpinnerServer
 	handler     spinhandler.Handler
 	ctx			context.Context
 	chooser		spinhandler.Chooser
-	router		map[string]spincomm.Spinner_RequestServer
+	router		map[string]*spinrequest
   }
   
 func New(ctx context.Context) *grpc.Server {
 	chooser := spinhandler.InitCustomChooser()
 	s := &spinnerserver{
 	  handler: spinhandler.New(),
-	  ctx: ctx, 
+	  ctx: ctx,
 	  chooser: &chooser,
-	  router: make(map[string]spincomm.Spinner_RequestServer),
+	  router: make(map[string]*spinrequest),
 	}
 	grpcServer := grpc.NewServer()
 	spincomm.RegisterSpinnerServer(grpcServer, s)
@@ -37,29 +49,51 @@ func New(ctx context.Context) *grpc.Server {
 }
 
 func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) error {
+	log.Printf("Got request: %v\n", req)
 	id := req.GetTaskId().GetValue()
 	if id == "" {
 		return errors.New("No task id given")
 	}
-	s.router[id] = stream
+	ctx, cancel := context.WithCancel(s.ctx)
+	request := NewRequest(stream, cancel)
+	s.router[id] = request
 	cid, err := s.handler.ChooseClient(s.chooser, req)
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
 	if !ok {return errors.New("No such client")}
-	return cl.SendTask(req)
+	if err = cl.SendTask(req); err != nil {return err}
+	<- ctx.Done()
+	return nil
 }
 
 func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 	for {
 		taskLog, err := stream.Recv()
-		if err == io.EOF {return stream.SendAndClose(&spincomm.TaskCompletion{})}
-		if err != nil {return err}
-		log.Println(taskLog)
+		if err == io.EOF {
+			log.Println(err)
+			return stream.SendAndClose(&spincomm.TaskCompletion{})
+		}
+		if err != nil {
+			log.Println(err)
+			return err
+		}
+		log.Println("TaskLog:", taskLog)
 		id := taskLog.GetTaskId().GetValue()
-		if id == "" {return errors.New("No id given")}
+		if id == "" {
+			err = errors.New("No id given")
+			log.Println(err)
+			return err
+		}
 		taskStream, ok := s.router[id]
-		if !ok {return errors.New("No such task")}
-		if err = taskStream.Send(taskLog); err != nil {return err}
+		if !ok {
+			err = errors.New("No such task")
+			log.Println(err)
+			return err
+		}
+		if err = taskStream.stream.Send(taskLog); err != nil {
+			log.Println(err)
+			return err
+		}
 	}
 }
 
