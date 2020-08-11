@@ -68,6 +68,7 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 }
 
 func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
+	setEnd := false
 	for {
 		taskLog, err := stream.Recv()
 		if err == io.EOF {
@@ -78,6 +79,7 @@ func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 			log.Println(err)
 			return err
 		}
+		
 		log.Println("TaskLog:", taskLog)
 		id := taskLog.GetTaskId().GetValue()
 		if id == "" {
@@ -90,6 +92,11 @@ func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 			err = errors.New("No such task")
 			log.Println(err)
 			return err
+		}
+		if !setEnd {
+			setEnd = true 
+			complete := taskStream.complete
+			defer complete()
 		}
 		if err = taskStream.stream.Send(taskLog); err != nil {
 			log.Println(err)
