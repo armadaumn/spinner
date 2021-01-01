@@ -17,7 +17,7 @@ type handler struct {
 type Handler interface{
 	AddClient(client spinclient.Client) error
 	RemoveClient(id string) error
-	ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, error)
+	ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, string, error)
 	ListClientIds() []string
 	GetClient(id string) (spinclient.Client, bool)
 	// ConnectClient(id string) error
@@ -41,7 +41,7 @@ func (h *handler) RemoveClient(id string) error {
 	return err
 }
 
-func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, error) {
+func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, string, error) {
 	return ch.F(h.clientmap, req)
 }
 

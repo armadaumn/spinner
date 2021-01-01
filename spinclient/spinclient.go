@@ -8,13 +8,17 @@ import (
 )
 
 type client struct {
-	id			string
-	stream 		spincomm.Spinner_AttachServer
-	cancel		func()
-	taskchan	chan *spincomm.TaskRequest
-	err			error
-	ctx			context.Context
-	info        nodeInfo
+	id       string
+	stream   spincomm.Spinner_AttachServer
+	cancel   func()
+	taskchan chan *spincomm.TaskRequest
+	err      error
+	ctx      context.Context
+	info     nodeInfo
+	ip       string
+	port     string
+	lat      float64 //latitude
+	lon      float64 //longitude
 }
 
 type Client interface {
@@ -23,6 +27,7 @@ type Client interface {
 	Run() error
 	Info() nodeInfo
 	UpdateStatus(status *spincomm.NodeInfo) error
+	Location() (float64, float64, error)
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -36,11 +41,22 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		info: nodeInfo{
 			HostResource: make(map[string]*spincomm.ResourceStatus),
 		},
+		ip: request.GetIP(),
+		port: request.GetPort(),
+		lat: request.GetLat(),
+		lon: request.GetLon(),
 	}
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
 			err: "No Client ID given",
 		}
+	}
+
+	if c.lat == 0 && c.lon == 0 && c.ip != "" {
+		// TODO: fetch lat and lon
+	} else {
+		c.lat = 45.0196
+		c.lon = -93.2402
 	}
 
 	return c, nil
@@ -102,4 +118,11 @@ func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	c.info.HostResource = status.GetHostResource()
 	log.Println("after:", c.info)
 	return nil
+}
+
+func (c *client) Location() (float64, float64, error) {
+	if c.lat == 0 && c.lon == 0 {
+		return 0, 0, errors.New("No availabe location")
+	}
+	return c.lat, c.lon, nil
 }

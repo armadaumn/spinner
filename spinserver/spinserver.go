@@ -58,9 +58,10 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	ctx, cancel := context.WithCancel(s.ctx)
 	request := NewRequest(stream, cancel)
 	s.router[id] = request
-	cid, err := s.handler.ChooseClient(s.chooser, req)
+	cid, cargo, err := s.handler.ChooseClient(s.chooser, req)
 	//TODO
 	log.Println(cid)
+	log.Println(cargo)
 
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)

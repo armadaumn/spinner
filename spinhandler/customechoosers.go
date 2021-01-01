@@ -1,12 +1,15 @@
 package spinhandler
 
 import (
+	"context"
 	"errors"
+	"github.com/ArmadaStore/comms/rpc/taskToCargoMgr"
 	"github.com/armadanet/spinner/spinclient"
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler/filter"
 	"github.com/armadanet/spinner/spinhandler/sort"
-	"github.com/ArmadaStore/comms/rpc/taskToCargoMgr"
+	"google.golang.org/grpc"
+	"log"
 )
 
 type CustomChooser struct {
@@ -30,7 +33,7 @@ func InitCustomChooser() CustomChooser {
 	return chooser
 }
 
-func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, error) {
+func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string, error) {
 	newclients := make(map[string]spinclient.Client)
 	for _, k := range c.Keys() {
 		newclients[k], _ = c.Get(k)
@@ -51,24 +54,66 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, error)
 				soft = true
 				r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), newclients)
 			} else {
-				return "", err
+				return "", "", err
 			}
 		}
 
 		if len(newclients) == 0 {
 			err := errors.New("no clients")
-			return "", err
+			return "", "", err
 		}
 	}
 	sortPlugin := tq.GetTaskspec().GetSort()
 	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
+
+	// Contact with cargo manager
+	//TODO: change to a dynamic address
+	//var service taskToCargoMgr.RpcTaskToCargoMgrClient
+	//var conn *grpc.ClientConn
+	cargoFlag := false
+	if tq.GetTaskspec().GetCargoSpec() != nil {
+		cargoFlag = true
+		//conn, err = grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
+		//if err != nil {
+		//	cargoFlag = false
+		//	log.Printf("Cannot access to Cargo Manager")
+		//}
+		//service = taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
+	}
+
 	//TODO: double check
+	cargoAddr := ""
 	for _, id := range sortResult {
 		if client, ok := c.Get(id); ok {
-
-			return id, nil
+			if cargoFlag {
+				lat, lon, err := client.Location()
+				if err != nil {
+					continue
+				}
+				conn, err := grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
+				if err != nil {
+					log.Printf("Cannot access to Cargo Manager")
+					return id, "", nil
+				}
+				service := taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
+				req := taskToCargoMgr.RequesterInfo{
+					Lat: lat,
+					Lon: lon,
+					Size: tq.GetTaskspec().GetCargoSpec().GetSize(),
+					NReplicas: tq.GetTaskspec().GetCargoSpec().GetNReplica(),
+				}
+				log.Println(req)
+				res, err := service.RequestCargo(context.Background(), &req)
+				if err != nil {
+					log.Println(err)
+				}
+				cargoAddr = res.GetIPPort()
+				log.Println("cargo Address: " + cargoAddr)
+				conn.Close()
+			}
+			return id, cargoAddr, nil
 		}
 	}
 
-	return "", errors.New("no node")
+	return "", cargoAddr, errors.New("no node")
 }

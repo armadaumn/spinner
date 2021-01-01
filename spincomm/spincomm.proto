@@ -18,7 +18,9 @@ message UUID {
 message JoinRequest {
     UUID captain_id = 1;
     string IP = 2;
-    string port=3;
+    string port = 3;
+    double lat = 4;
+    double lon = 5;
 }
 
 message TaskLimits {
@@ -81,7 +83,8 @@ message TaskSpec {
     map<string, ResourceRequirement> ResourceMap = 3;
     map<string, string> Ports = 4;
     bool IsPublic = 5;
-    int64 NumReplicas =6;
+    int64 NumReplicas = 6;
+    CargoReq CargoSpec = 7;
 }
 
 message ResourceRequirement {
@@ -92,4 +95,9 @@ message ResourceRequirement {
 
 message PingResp {
     bool status = 1;
+}
+
+message CargoReq {
+    int64 Size = 1;
+    int64 nReplica = 2;
 }
