@@ -6,6 +6,7 @@ import (
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler/filter"
 	"github.com/armadanet/spinner/spinhandler/sort"
+	"github.com/ArmadaStore/comms/rpc/taskToCargoMgr"
 )
 
 type CustomChooser struct {
@@ -63,9 +64,11 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, error)
 	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
 	//TODO: double check
 	for _, id := range sortResult {
-		if _, ok := c.Get(id); ok {
+		if client, ok := c.Get(id); ok {
+
 			return id, nil
 		}
 	}
+
 	return "", errors.New("no node")
 }

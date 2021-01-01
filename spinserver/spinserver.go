@@ -48,6 +48,7 @@ func New(ctx context.Context) *grpc.Server {
 	return grpcServer
 }
 
+// Receive a new task
 func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) error {
 	log.Printf("Got request: %v\n", req)
 	id := req.GetTaskId().GetValue()
@@ -58,6 +59,9 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	request := NewRequest(stream, cancel)
 	s.router[id] = request
 	cid, err := s.handler.ChooseClient(s.chooser, req)
+	//TODO
+	log.Println(cid)
+
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
 	if !ok {return errors.New("No such client")}
@@ -66,6 +70,7 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	return nil
 }
 
+// Runtime task log
 func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 	for {
 		taskLog, err := stream.Recv()
@@ -97,6 +102,7 @@ func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 	}
 }
 
+// Captain joins the spinner
 func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) error {
 	log.Println("Attaching")
 	cl, err := spinclient.RequestClient(s.ctx, req, stream)
@@ -116,6 +122,7 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 	return err
 }
 
+// Captain status update
 func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (*spincomm.PingResp, error) {
 	err := s.handler.UpdateClient(status)
 	resp := spincomm.PingResp{
