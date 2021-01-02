@@ -67,18 +67,18 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
 
 	// Contact with cargo manager
-	//TODO: change to a dynamic address
-	//var service taskToCargoMgr.RpcTaskToCargoMgrClient
-	//var conn *grpc.ClientConn
+	var service taskToCargoMgr.RpcTaskToCargoMgrClient
+	var conn *grpc.ClientConn
 	cargoFlag := false
 	if tq.GetTaskspec().GetCargoSpec() != nil {
 		cargoFlag = true
-		//conn, err = grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
-		//if err != nil {
-		//	cargoFlag = false
-		//	log.Printf("Cannot access to Cargo Manager")
-		//}
-		//service = taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
+		//TODO: change to a dynamic address "cargoMgr:port"
+		conn, err = grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
+		if err != nil {
+			cargoFlag = false
+			log.Printf("Cannot access to Cargo Manager")
+		}
+		service = taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
 	}
 
 	//TODO: double check
@@ -90,12 +90,6 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 				if err != nil {
 					continue
 				}
-				conn, err := grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
-				if err != nil {
-					log.Printf("Cannot access to Cargo Manager")
-					return id, "", nil
-				}
-				service := taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
 				req := taskToCargoMgr.RequesterInfo{
 					Lat: lat,
 					Lon: lon,
