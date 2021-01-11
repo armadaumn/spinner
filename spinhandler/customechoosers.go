@@ -33,7 +33,7 @@ func InitCustomChooser() CustomChooser {
 	return chooser
 }
 
-func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string, error) {
+func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskToCargoMgr.Cargos, error) {
 	newclients := make(map[string]spinclient.Client)
 	for _, k := range c.Keys() {
 		newclients[k], _ = c.Get(k)
@@ -54,13 +54,13 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 				soft = true
 				r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), newclients)
 			} else {
-				return "", "", err
+				return "", nil, err
 			}
 		}
 
 		if len(newclients) == 0 {
 			err := errors.New("no clients")
-			return "", "", err
+			return "", nil, err
 		}
 	}
 	sortPlugin := tq.GetTaskspec().GetSort()
@@ -73,7 +73,7 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 	if tq.GetTaskspec().GetCargoSpec() != nil {
 		cargoFlag = true
 		//TODO: change to a dynamic address "cargoMgr:port"
-		conn, err = grpc.Dial("127.0.0.1"+":"+"5913", grpc.WithInsecure())
+		conn, err = grpc.Dial("cargomgr"+":"+"8099", grpc.WithInsecure())
 		if err != nil {
 			cargoFlag = false
 			log.Printf("Cannot access to Cargo Manager")
@@ -81,8 +81,8 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 		service = taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
 	}
 
-	//TODO: double check
-	cargoAddr := ""
+	//double check
+	var cargos *taskToCargoMgr.Cargos
 	for _, id := range sortResult {
 		if client, ok := c.Get(id); ok {
 			if cargoFlag {
@@ -95,19 +95,18 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, string
 					Lon: lon,
 					Size: tq.GetTaskspec().GetCargoSpec().GetSize(),
 					NReplicas: tq.GetTaskspec().GetCargoSpec().GetNReplica(),
+					AppID: tq.GetAppId().GetValue(),
 				}
 				log.Println(req)
-				res, err := service.RequestCargo(context.Background(), &req)
+				cargos, err = service.RequestCargo(context.Background(), &req)
 				if err != nil {
 					log.Println(err)
 				}
-				cargoAddr = res.GetIPPort()
-				log.Println("cargo Address: " + cargoAddr)
 				conn.Close()
 			}
-			return id, cargoAddr, nil
+			return id, cargos, nil
 		}
 	}
 
-	return "", cargoAddr, errors.New("no node")
+	return "", nil, errors.New("no node")
 }

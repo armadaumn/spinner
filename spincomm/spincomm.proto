@@ -29,7 +29,7 @@ message TaskLimits {
 }
 
 message TaskRequest {
-    UUID task_id = 1;
+    UUID app_id = 1;
     string image = 2;
     repeated string command = 3;
     bool tty = 4;
@@ -100,4 +100,6 @@ message PingResp {
 message CargoReq {
     int64 Size = 1;
     int64 nReplica = 2;
+    repeated string IPs = 3;
+    repeated string Ports = 4;
 }

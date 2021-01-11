@@ -51,7 +51,7 @@ func New(ctx context.Context) *grpc.Server {
 // Receive a new task
 func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) error {
 	log.Printf("Got request: %v\n", req)
-	id := req.GetTaskId().GetValue()
+	id := req.GetAppId().GetValue()
 	if id == "" {
 		return errors.New("No task id given")
 	}
@@ -59,13 +59,15 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	request := NewRequest(stream, cancel)
 	s.router[id] = request
 	cid, cargo, err := s.handler.ChooseClient(s.chooser, req)
-	//TODO
-	log.Println(cid)
-	log.Println(cargo)
-
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
 	if !ok {return errors.New("No such client")}
+	log.Println(cid)
+	log.Println(cargo)
+	if cargo != nil {
+		req.Taskspec.CargoSpec.IPs = cargo.GetIPs()
+		req.Taskspec.CargoSpec.Ports = cargo.GetPorts()
+	}
 	if err = cl.SendTask(req); err != nil {return err}
 	<- ctx.Done()
 	return nil

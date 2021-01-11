@@ -7,8 +7,10 @@ go 1.13
 //replace github.com/armadanet/captain/dockercntrl => /Users/lh/Desktop/go/src/github.com/armadanet/captain/dockercntrl
 replace github.com/armadanet/spinner => /Users/zhiyingliang/Documents/armada/spinner
 
+//replace github.com/ArmadaStore/comms => /Users/zhiyingliang/Documents/armada/store/comms
+
 require (
-	github.com/ArmadaStore/comms v0.0.0-20201231053020-c7ef8cc8487b
+	github.com/ArmadaStore/comms v0.0.0-20210108195012-cc92ea560945
 	github.com/golang/protobuf v1.4.3
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
