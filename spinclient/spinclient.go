@@ -60,18 +60,15 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		lon: request.GetLon(),
 		//tasks: make([]*spincomm.TaskRequest, 0),
 	}
-	c.ip = "0.0.0.0"
+	//c.ip = "0.0.0.0"
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
 			err: "No Client ID given",
 		}
 	}
 
-	if c.lat == 0 && c.lon == 0 && c.ip != "" {
+	if c.lat == 0 && c.lon == 0 {
 		// TODO: fetch lat and lon
-		c.lat = 45.0196
-		c.lon = -93.2402
-	} else {
 		c.lat = 45.0196
 		c.lon = -93.2402
 	}
