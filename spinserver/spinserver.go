@@ -66,8 +66,7 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
 	if !ok {return errors.New("No such client")}
-	log.Println(cid)
-	log.Println(cargo)
+
 	if cargo != nil {
 		req.Taskspec.CargoSpec.IPs = cargo.GetIPs()
 		req.Taskspec.CargoSpec.Ports = cargo.GetPorts()

@@ -98,8 +98,8 @@ message ResourceRequirement {
 }
 
 message Location {
-    string lat = 1;
-    string lon = 2;
+    double lat = 1;
+    double lon = 2;
 }
 
 message PingResp {

@@ -30,7 +30,7 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
-	//chooser.sort["Geolocation"] = &sort.GeoSort{}
+	chooser.sort["Geolocation"] = &sort.GeoSort{}
 	return chooser
 }
 
@@ -80,7 +80,14 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		}
 	}
 	sortPlugin := tq.GetTaskspec().GetSort()
-	sortResult := r.sort[sortPlugin].SortNode(tq.GetTaskspec(), newclients, soft)
+	sortResult := make([]string, len(newclients))
+	if sortPolicy, ok := r.sort[sortPlugin]; ok {
+		sortResult = sortPolicy.SortNode(tq.GetTaskspec(), newclients, soft)
+	} else {
+		for key, _ := range newclients {
+			sortResult = append(sortResult, key)
+		}
+	}
 
 	// Contact with cargo manager
 	var service taskToCargoMgr.RpcTaskToCargoMgrClient
@@ -113,7 +120,6 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 					NReplicas: tq.GetTaskspec().GetCargoSpec().GetNReplica(),
 					AppID: tq.GetAppId().GetValue(),
 				}
-				log.Println(req)
 				cargos, err = service.RequestCargo(context.Background(), &req)
 				if err != nil {
 					log.Println(err)

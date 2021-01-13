@@ -1,10 +1,12 @@
 package spinclient
 
 import (
-	"github.com/armadanet/spinner/spincomm"
 	"context"
-	"log"
 	"errors"
+	"github.com/armadanet/spinner/spincomm"
+	"github.com/google/uuid"
+	"log"
+	"github.com/mmcloughlin/geohash"
 )
 
 type client struct {
@@ -19,6 +21,7 @@ type client struct {
 	port     string
 	lat      float64 //latitude
 	lon      float64 //longitude
+	geoid    string
 }
 
 type Client interface {
@@ -29,6 +32,7 @@ type Client interface {
 	UpdateStatus(status *spincomm.NodeInfo) error
 	Location() (float64, float64, error)
 	IP() string
+	Geoid() string
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -62,6 +66,7 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		c.lat = 45.0196
 		c.lon = -93.2402
 	}
+	c.geoid = c.genGeoHashID(c.lat, c.lon)
 
 	return c, nil
 }
@@ -133,4 +138,18 @@ func (c *client) Location() (float64, float64, error) {
 
 func (c *client) IP() string {
 	return c.ip
+}
+
+func (c *client) Geoid() string {
+	return c.geoid
+}
+
+func (c *client) genGeoHashID(lat float64, lon float64) string {
+	geohashIDstr := geohash.Encode(lat, lon)
+	uuID, err := uuid.NewUUID()
+	if err != nil {
+		log.Println(err)
+	}
+	geoID := geohashIDstr + "-" + uuID.String()
+	return geoID
 }
