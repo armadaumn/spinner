@@ -5,8 +5,8 @@ import (
 	"errors"
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/google/uuid"
-	"log"
 	"github.com/mmcloughlin/geohash"
+	"log"
 )
 
 type client struct {
@@ -22,6 +22,12 @@ type client struct {
 	lat      float64 //latitude
 	lon      float64 //longitude
 	geoid    string
+	tasks    []request
+}
+
+type request struct {
+	Requirement *spincomm.TaskRequest
+	Stream      spincomm.Spinner_RequestServer
 }
 
 type Client interface {
@@ -33,6 +39,8 @@ type Client interface {
 	Location() (float64, float64, error)
 	IP() string
 	Geoid() string
+	GetTasks() []request
+	UpdateTasks(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer)
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -50,6 +58,7 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		port: request.GetPort(),
 		lat: request.GetLat(),
 		lon: request.GetLon(),
+		//tasks: make([]*spincomm.TaskRequest, 0),
 	}
 	c.ip = "0.0.0.0"
 	if c.id == "" {
@@ -74,8 +83,6 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 func (c *client) Id() string {
 	return c.id
 }
-
-
 
 func (c *client) SendTask(task *spincomm.TaskRequest) error {
 	if c.err != nil {
@@ -106,10 +113,15 @@ func (c *client) Run() error {
 				c.err = err
 				return c.err
 			}
-		case <- ctx.Done():
+		case <-ctx.Done():
 			log.Printf("Context ended for %s: %v\n", c.Id(), ctx.Err())
+			c.err = errors.New("context ended")
+			return c.err
+
+		case <-c.stream.Context().Done():
+			log.Printf("Stream ended by %s: %v\n", c.Id(), ctx.Err())
 			c.err = ctx.Err()
-			return c.err 
+			return c.err
 		}
 	}
 }
@@ -152,4 +164,16 @@ func (c *client) genGeoHashID(lat float64, lon float64) string {
 	}
 	geoID := geohashIDstr + "-" + uuID.String()
 	return geoID
+}
+
+func (c *client) GetTasks() []request {
+	return c.tasks
+}
+
+func (c *client) UpdateTasks(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) {
+	task := request{
+		Requirement: req,
+		Stream: stream,
+	}
+	c.tasks = append(c.tasks, task)
 }
