@@ -6,5 +6,5 @@ import (
 )
 
 type Filter interface {
-	FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error
+	FilterNode(tq *spincomm.TaskRequest, clients map[string]spinclient.Client) error
 }

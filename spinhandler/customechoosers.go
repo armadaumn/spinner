@@ -28,6 +28,7 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["Public"] = &filter.PublicFilter{}
 	chooser.filters["Resource"] = &filter.ResourceFilter{}
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
+	chooser.filters["Affinity"] = &filter.AffinityFilter{}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
 	chooser.sort["Geolocation"] = &sort.GeoSort{}
@@ -63,12 +64,12 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 
 	filterPlugins := tq.GetTaskspec().GetFilters()
 	for _, f := range filterPlugins {
-		err = r.filters[f].FilterNode(tq.GetTaskspec(), newclients)
+		err = r.filters[f].FilterNode(tq, newclients)
 
 		if err != nil {
 			if err.Error() == ErrNoNode.Error() {
 				soft = true
-				r.filters["SoftResource"].FilterNode(tq.GetTaskspec(), newclients)
+				r.filters["SoftResource"].FilterNode(tq, newclients)
 			} else {
 				return "", nil, err
 			}

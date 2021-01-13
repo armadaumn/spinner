@@ -76,6 +76,8 @@ message NodeInfo {
     map<string, ResourceStatus> host_resource = 2;
     repeated string used_ports = 3;
     ContainerStatus container_status = 4;
+    repeated string appIDs = 5;
+    repeated string taskIDs = 6;
 }
 
 

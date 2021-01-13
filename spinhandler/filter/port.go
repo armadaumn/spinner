@@ -9,9 +9,9 @@ import (
 type PortFilter struct {
 }
 
-func (f *PortFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
+func (f *PortFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spinclient.Client) error {
 	//Ports filtering
-	if len(tq.Ports) == 0 {
+	if len(tq.GetTaskspec().Ports) == 0 {
 		//do nothing
 		log.Println("passed")
 		return nil
@@ -19,7 +19,7 @@ func (f *PortFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spincl
 	for id, client := range clients {
 		isUsed := false
 		for _, port := range client.Info().UsedPorts {
-			if _, ok := tq.Ports[port]; ok {
+			if _, ok := tq.GetTaskspec().Ports[port]; ok {
 				isUsed = true
 				break
 			}

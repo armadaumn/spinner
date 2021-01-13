@@ -22,7 +22,8 @@ type client struct {
 	lat      float64 //latitude
 	lon      float64 //longitude
 	geoid    string
-	tasks    []request
+	tasks    []string
+	apps     []string
 }
 
 type request struct {
@@ -39,8 +40,8 @@ type Client interface {
 	Location() (float64, float64, error)
 	IP() string
 	Geoid() string
-	GetTasks() []request
-	UpdateTasks(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer)
+	GetTasks() []string
+	GetApps() []string
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -58,7 +59,8 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		port: request.GetPort(),
 		lat: request.GetLat(),
 		lon: request.GetLon(),
-		//tasks: make([]*spincomm.TaskRequest, 0),
+		tasks: make([]string, 0),
+		apps: make([]string, 0),
 	}
 	//c.ip = "0.0.0.0"
 	if c.id == "" {
@@ -129,12 +131,14 @@ func (c *client) Info() nodeInfo {
 
 func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	//TODO: Remove testing output information
-	//log.Println("before:", c.info)
 	c.info.UsedPorts = status.GetUsedPorts()
 	c.info.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
 	c.info.Images = status.GetContainerStatus().GetImages()
 	c.info.HostResource = status.GetHostResource()
+	c.apps = status.GetAppIDs()
+	c.tasks = status.GetTaskIDs()
 	log.Println("after:", c.info)
+	log.Println("app: ", c.apps)
 	return nil
 }
 
@@ -163,14 +167,10 @@ func (c *client) genGeoHashID(lat float64, lon float64) string {
 	return geoID
 }
 
-func (c *client) GetTasks() []request {
+func (c *client) GetTasks() []string {
 	return c.tasks
 }
 
-func (c *client) UpdateTasks(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) {
-	task := request{
-		Requirement: req,
-		Stream: stream,
-	}
-	c.tasks = append(c.tasks, task)
+func (c *client) GetApps() []string {
+	return c.apps
 }

@@ -9,11 +9,11 @@ type SoftResFilter struct {
 
 }
 
-func (f *SoftResFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
+func (f *SoftResFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spinclient.Client) error {
 	// Do soft filtering
 	for id, client := range clients {
 		isSufficient := true
-		for res, requirement := range tq.ResourceMap {
+		for res, requirement := range tq.GetTaskspec().ResourceMap {
 			if !requirement.Required {
 				continue
 			}

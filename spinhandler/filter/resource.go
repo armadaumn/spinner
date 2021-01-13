@@ -17,20 +17,20 @@ type ResourceFilter struct {
 //	}, nil
 //}
 
-func (f *ResourceFilter) FilterNode(tq *spincomm.TaskSpec, clients map[string]spinclient.Client) error {
+func (f *ResourceFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spinclient.Client) error {
 	//hard resource filtering
 	newclients := make(map[string]spinclient.Client)
 	for k, v := range clients {
 		newclients[k] = v
 	}
-	if len(tq.ResourceMap) == 0 {
+	if len(tq.GetTaskspec().ResourceMap) == 0 {
 		//do nothing
 		log.Println("passed")
 		return nil
 	}
 	for id, client := range clients {
 		isSufficient := true
-		for res, requirement := range tq.ResourceMap {
+		for res, requirement := range tq.GetTaskspec().ResourceMap {
 			if status, ok := client.Info().HostResource[res]; ok {
 				if status.Unassigned < requirement.Requested {
 					isSufficient = false
