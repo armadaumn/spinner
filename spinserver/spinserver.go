@@ -1,6 +1,5 @@
 package spinserver
 
-
 import (
 	"context"
 	"errors"
@@ -10,8 +9,6 @@ import (
 	"google.golang.org/grpc"
 	"io"
 	"log"
-	"time"
-
 	// "time"
 	// "strconv"
 )
@@ -145,17 +142,21 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 
 		s.handler.RemoveClient(cl.Id())
 		if task, ok := s.taskMap[cl.Id()]; ok {
-			amStream := s.router[task.GetTaskId().GetValue()]
-			delete(s.taskMap, cl.Id())
-			retry := 0
-			for true {
-				err := s.Request(task, amStream.stream)
-				retry++
-				if err == nil || retry == 1{
-					break
-				}
-				time.Sleep(10 * time.Second)
-			}
+			taskid := task.GetTaskId().GetValue()
+			s.router[taskid].complete()
+
+			// Restart deployment
+			//amStream := s.router[task.GetTaskId().GetValue()]
+			//delete(s.taskMap, cl.Id())
+			//retry := 0
+			//for true {
+			//	err := s.Request(task, amStream.stream)
+			//	retry++
+			//	if err == nil || retry == 1{
+			//		break
+			//	}
+			//	time.Sleep(10 * time.Second)
+			//}
 		}
 	}
 
