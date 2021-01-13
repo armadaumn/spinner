@@ -139,8 +139,7 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 	}
 	
 	err = cl.Run()
-	if err.Error() != "context ended" {
-		log.Println(err)
+	if err == nil || err.Error() != "context ended" {
 		// handling error
 		log.Println(cl.Id() + " left")
 
@@ -148,9 +147,11 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 		if task, ok := s.taskMap[cl.Id()]; ok {
 			amStream := s.router[task.GetTaskId().GetValue()]
 			delete(s.taskMap, cl.Id())
+			retry := 0
 			for true {
 				err := s.Request(task, amStream.stream)
-				if err == nil {
+				retry++
+				if err == nil || retry == 1{
 					break
 				}
 				time.Sleep(10 * time.Second)

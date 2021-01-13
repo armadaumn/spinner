@@ -120,7 +120,7 @@ func (c *client) Run() error {
 
 		case <-c.stream.Context().Done():
 			log.Printf("Stream ended by %s: %v\n", c.Id(), ctx.Err())
-			c.err = ctx.Err()
+			c.err = errors.New("captain left")
 			return c.err
 		}
 	}
