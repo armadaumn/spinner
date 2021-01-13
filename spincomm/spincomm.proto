@@ -9,6 +9,7 @@ service Spinner {
     rpc Run (stream TaskLog) returns (TaskCompletion); 
     rpc Request (TaskRequest) returns (stream TaskLog);
     rpc Update (NodeInfo) returns (PingResp);
+    rpc RegisterScheduler (SchedulePolicy) returns (PingResp);
 }
 
 message UUID {
@@ -38,11 +39,13 @@ message TaskRequest {
     int64 port = 7;
     TaskLimits limits = 8;
     TaskSpec taskspec = 9;
+    UUID task_id = 10;
 }
 
 message TaskLog {
     UUID task_id = 1;
-    string log = 2;
+    string ip = 2;
+    map<string, ResourceStatus> host_resource = 3;
 }
 
 message TaskCompletion {
@@ -85,12 +88,18 @@ message TaskSpec {
     bool IsPublic = 5;
     int64 NumReplicas = 6;
     CargoReq CargoSpec = 7;
+    repeated Location DataSources = 8;
 }
 
 message ResourceRequirement {
     int64 Requested = 1;
     double Weight = 2;
     bool Required = 3;
+}
+
+message Location {
+    string lat = 1;
+    string lon = 2;
 }
 
 message PingResp {
@@ -102,4 +111,12 @@ message CargoReq {
     int64 nReplica = 2;
     repeated string IPs = 3;
     repeated string Ports = 4;
+}
+
+// Customize scheduler interface
+message SchedulePolicy {
+    string id = 1;
+    string type = 2;
+    string IP = 3;
+    string port = 4;
 }

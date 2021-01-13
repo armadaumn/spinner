@@ -28,6 +28,7 @@ type Client interface {
 	Info() nodeInfo
 	UpdateStatus(status *spincomm.NodeInfo) error
 	Location() (float64, float64, error)
+	IP() string
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -46,6 +47,7 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		lat: request.GetLat(),
 		lon: request.GetLon(),
 	}
+	c.ip = "0.0.0.0"
 	if c.id == "" {
 		return nil, &MalformedClientRequestError{
 			err: "No Client ID given",
@@ -54,6 +56,8 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 
 	if c.lat == 0 && c.lon == 0 && c.ip != "" {
 		// TODO: fetch lat and lon
+		c.lat = 45.0196
+		c.lon = -93.2402
 	} else {
 		c.lat = 45.0196
 		c.lon = -93.2402
@@ -125,4 +129,8 @@ func (c *client) Location() (float64, float64, error) {
 		return 0, 0, errors.New("No availabe location")
 	}
 	return c.lat, c.lon, nil
+}
+
+func (c *client) IP() string {
+	return c.ip
 }

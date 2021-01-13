@@ -30,7 +30,23 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
+	//chooser.sort["Geolocation"] = &sort.GeoSort{}
 	return chooser
+}
+
+func (r *CustomChooser) Register(id string, kind string, ip string, port string) bool {
+	//conn, err := grpc.Dial(ip+":"+port, grpc.WithInsecure())
+	//if err != nil {
+	//	log.Printf("Cannot access to remote scheduler.")
+	//	return false
+	//}
+	////TODO: modify
+	//service := taskToCargoMgr.NewRpcTaskToCargoMgrClient(conn)
+	//if kind == "filter" {
+	//	c := filter.CustomFilter{service: service}
+	//	r.filters[id] = &c
+	//}
+	return true
 }
 
 func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskToCargoMgr.Cargos, error) {

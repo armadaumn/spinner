@@ -2,14 +2,14 @@ package spinserver
 
 
 import (
-	"google.golang.org/grpc"
+	"context"
+	"errors"
+	"github.com/armadanet/spinner/spinclient"
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler"
-	"github.com/armadanet/spinner/spinclient"
-	"context"
-	"log"
+	"google.golang.org/grpc"
 	"io"
-	"errors"
+	"log"
 	// "time"
 	// "strconv"
 )
@@ -33,7 +33,8 @@ type spinnerserver struct {
 	ctx			context.Context
 	chooser		spinhandler.Chooser
 	router		map[string]*spinrequest
-  }
+	taskMap     map[string]string
+}
   
 func New(ctx context.Context) *grpc.Server {
 	chooser := spinhandler.InitCustomChooser()
@@ -42,6 +43,7 @@ func New(ctx context.Context) *grpc.Server {
 	  ctx: ctx,
 	  chooser: &chooser,
 	  router: make(map[string]*spinrequest),
+	  taskMap: make(map[string]string),
 	}
 	grpcServer := grpc.NewServer()
 	spincomm.RegisterSpinnerServer(grpcServer, s)
@@ -51,13 +53,15 @@ func New(ctx context.Context) *grpc.Server {
 // Receive a new task
 func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinner_RequestServer) error {
 	log.Printf("Got request: %v\n", req)
-	id := req.GetAppId().GetValue()
-	if id == "" {
+	taskID := req.GetTaskId().GetValue()
+	if taskID == "" {
 		return errors.New("No task id given")
 	}
 	ctx, cancel := context.WithCancel(s.ctx)
 	request := NewRequest(stream, cancel)
-	s.router[id] = request
+	s.router[taskID] = request
+
+	// Choose captains
 	cid, cargo, err := s.handler.ChooseClient(s.chooser, req)
 	if err != nil {return err}
 	cl, ok := s.handler.GetClient(cid)
@@ -69,6 +73,20 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 		req.Taskspec.CargoSpec.Ports = cargo.GetPorts()
 	}
 	if err = cl.SendTask(req); err != nil {return err}
+	s.taskMap[cid] = taskID
+
+	// Return seleted node info
+	taskLog := spincomm.TaskLog{
+		TaskId: req.GetTaskId(),
+		Ip: cl.IP(),
+		HostResource: cl.Info().HostResource,
+	}
+
+	if err = stream.Send(&taskLog); err != nil {
+		log.Println(err)
+		return err
+	}
+
 	<- ctx.Done()
 	return nil
 }
@@ -92,16 +110,16 @@ func (s *spinnerserver) Run(stream spincomm.Spinner_RunServer) error {
 			log.Println(err)
 			return err
 		}
-		taskStream, ok := s.router[id]
-		if !ok {
-			err = errors.New("No such task")
-			log.Println(err)
-			return err
-		}
-		if err = taskStream.stream.Send(taskLog); err != nil {
-			log.Println(err)
-			return err
-		}
+		//taskStream, ok := s.router[id]
+		//if !ok {
+		//	err = errors.New("No such task")
+		//	log.Println(err)
+		//	return err
+		//}
+		//if err = taskStream.stream.Send(taskLog); err != nil {
+		//	log.Println(err)
+		//	return err
+		//}
 	}
 }
 
@@ -128,13 +146,46 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 // Captain status update
 func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (*spincomm.PingResp, error) {
 	err := s.handler.UpdateClient(status)
-	resp := spincomm.PingResp{
+	res := spincomm.PingResp{
 		Status: true,
 	}
+
+	go s.ReportTask(status)
 	if err != nil {
-		resp.Status = false
-		return &resp, err
+		res.Status = false
+		return &res, err
 	}
-	return &resp, nil
+	return &res, nil
 }
 
+// Register a scheduling policy
+func (s *spinnerserver) RegisterScheduler(ctx context.Context, sp *spincomm.SchedulePolicy) (*spincomm.PingResp, error) {
+	res := spincomm.PingResp{
+		Status: true,
+	}
+	isSuccess := s.chooser.Register(sp.GetId(), sp.GetType(), sp.GetIP(), sp.GetPort())
+	if !isSuccess {
+		res.Status = false
+	}
+	return &res, nil
+}
+
+func (s *spinnerserver) ReportTask(status *spincomm.NodeInfo) {
+	cid := status.GetCaptainId().GetValue()
+	taskID, ok := s.taskMap[cid]
+	if !ok {
+		return
+	}
+
+	stream := s.router[taskID].stream
+	cl, _ := s.handler.GetClient(cid)
+	taskLog := spincomm.TaskLog{
+		TaskId: &spincomm.UUID{Value: taskID},
+		Ip: cl.IP(),
+		HostResource: status.HostResource,
+	}
+
+	if err := stream.Send(&taskLog); err != nil {
+		log.Println(err)
+	}
+}

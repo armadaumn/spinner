@@ -18,7 +18,7 @@ test_build:
 	cd .. && docker build -t $(DEV_CONTAINER) -f build/$(DEV_DOCKERFILE) . 
 
 run: build network
-	docker run -it --net $(NETWORK) --name $(CONTAINER) $(CONTAINER)
+	docker run -it --rm --net $(NETWORK) --name $(CONTAINER) $(CONTAINER)
 
 build: test_build
 	cd .. && docker build -t $(CONTAINER) -f build/$(DOCKERFILE) --build-arg base=$(DEV_CONTAINER) .
