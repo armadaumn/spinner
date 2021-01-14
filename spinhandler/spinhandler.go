@@ -1,6 +1,7 @@
 package spinhandler
 
 import (
+	"errors"
 	"github.com/ArmadaStore/comms/rpc/taskToCargoMgr"
 	// "github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinclient"
@@ -18,7 +19,7 @@ type handler struct {
 type Handler interface{
 	AddClient(client spinclient.Client) error
 	RemoveClient(id string) error
-	ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, *taskToCargoMgr.Cargos, error)
+	ChooseClient(ch Chooser, req *spincomm.TaskRequest) (spinclient.Client, *taskToCargoMgr.Cargos, error)
 	ListClientIds() []string
 	GetClient(id string) (spinclient.Client, bool)
 	// ConnectClient(id string) error
@@ -42,8 +43,20 @@ func (h *handler) RemoveClient(id string) error {
 	return err
 }
 
-func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (string, *taskToCargoMgr.Cargos, error) {
-	return ch.F(h.clientmap, req)
+func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (spinclient.Client, *taskToCargoMgr.Cargos, error) {
+	h.mutex.Lock()
+	defer h.mutex.Unlock()
+
+	cid, cargos, err := ch.F(h.clientmap, req)
+	if err != nil {
+		return nil, cargos, err
+	}
+	cl, ok := h.GetClient(cid)
+	if !ok {
+		return nil, cargos, errors.New("No such client")
+	}
+	cl.AppendApps(req.GetAppId().Value)
+	return cl, cargos, nil
 }
 
 func (h *handler) ListClientIds() []string {

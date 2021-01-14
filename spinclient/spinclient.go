@@ -42,6 +42,7 @@ type Client interface {
 	Geoid() string
 	GetTasks() []string
 	GetApps() []string
+	AppendApps(appid string)
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -173,4 +174,8 @@ func (c *client) GetTasks() []string {
 
 func (c *client) GetApps() []string {
 	return c.apps
+}
+
+func (c *client) AppendApps(appid string) {
+	c.apps = append(c.apps, appid)
 }

@@ -32,7 +32,7 @@ type spinnerserver struct {
 	ctx			context.Context
 	chooser		spinhandler.Chooser
 	router		map[string]*spinrequest
-	taskMap     map[string]*spincomm.TaskRequest
+	taskMap     map[string][]*spincomm.TaskRequest
 }
   
 func New(ctx context.Context) *grpc.Server {
@@ -42,7 +42,7 @@ func New(ctx context.Context) *grpc.Server {
 	  ctx: ctx,
 	  chooser: &chooser,
 	  router: make(map[string]*spinrequest),
-	  taskMap: make(map[string]*spincomm.TaskRequest),
+	  taskMap: make(map[string][]*spincomm.TaskRequest),
 	}
 	grpcServer := grpc.NewServer()
 	spincomm.RegisterSpinnerServer(grpcServer, s)
@@ -61,17 +61,22 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	s.router[taskID] = request
 
 	// Choose captains
-	cid, cargo, err := s.handler.ChooseClient(s.chooser, req)
+	cl, cargo, err := s.handler.ChooseClient(s.chooser, req)
 	if err != nil {return err}
-	cl, ok := s.handler.GetClient(cid)
-	if !ok {return errors.New("No such client")}
+	//cl, ok := s.handler.GetClient(cid)
+	//if !ok {return errors.New("No such client")}
 
 	if cargo != nil {
 		req.Taskspec.CargoSpec.IPs = cargo.GetIPs()
 		req.Taskspec.CargoSpec.Ports = cargo.GetPorts()
 	}
 	if err = cl.SendTask(req); err != nil {return err}
-	s.taskMap[cid] = req
+
+	if _, ok := s.taskMap[cl.Id()]; !ok {
+		s.taskMap[cl.Id()] = []*spincomm.TaskRequest{req}
+	} else {
+		s.taskMap[cl.Id()] = append(s.taskMap[cl.Id()], req)
+	}
 
 	// Return selected node info
 	//taskLog := spincomm.TaskLog{
@@ -140,9 +145,11 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 		log.Println(cl.Id() + " left")
 
 		s.handler.RemoveClient(cl.Id())
-		if task, ok := s.taskMap[cl.Id()]; ok {
-			taskid := task.GetTaskId().GetValue()
-			s.router[taskid].complete()
+		if taskList, ok := s.taskMap[cl.Id()]; ok {
+			for _, task := range taskList {
+				taskid := task.GetTaskId().GetValue()
+				s.router[taskid].complete()
+			}
 			delete(s.taskMap, cl.Id())
 
 			// Restart deployment
@@ -171,8 +178,10 @@ func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (
 	}
 
 	cid := status.GetCaptainId().GetValue()
-	if task, ok := s.taskMap[cid]; ok {
-		go s.ReportTask(task.GetTaskId().GetValue(), cid, status)
+	if taskList, ok := s.taskMap[cid]; ok {
+		for _, task := range taskList {
+			go s.ReportTask(task.GetTaskId().GetValue(), cid, status)
+		}
 	}
 	if err != nil {
 		res.Status = false
