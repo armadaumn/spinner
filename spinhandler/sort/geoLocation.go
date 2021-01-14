@@ -19,7 +19,7 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 		score int
 	}, len(clients))
 
-	dataSources := tq.GetDataSources()
+	//dataSources := tq.GetDataSources()
 	index := 0
 	for id, captain := range clients {
 		result[index].id = id
