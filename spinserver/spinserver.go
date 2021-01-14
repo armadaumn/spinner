@@ -74,16 +74,15 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	s.taskMap[cid] = req
 
 	// Return selected node info
-	taskLog := spincomm.TaskLog{
-		TaskId: req.GetTaskId(),
-		Ip: cl.IP(),
-		HostResource: cl.Info().HostResource,
-	}
-
-	if err = stream.Send(&taskLog); err != nil {
-		log.Println(err)
-		return err
-	}
+	//taskLog := spincomm.TaskLog{
+	//	TaskId: &spincomm.UUID{Value: taskID},
+	//	Ip: cl.IP(),
+	//	HostResource: cl.Info().HostResource,
+	//}
+	//if err = stream.Send(&taskLog); err != nil {
+	//	log.Println(err)
+	//	return err
+	//}
 
 	<- ctx.Done()
 	return nil

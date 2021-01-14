@@ -138,7 +138,7 @@ func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	c.apps = status.GetAppIDs()
 	c.tasks = status.GetTaskIDs()
 	log.Println("after:", c.info)
-	log.Println("app: ", c.apps)
+	//log.Println("app: ", c.apps)
 	return nil
 }
 
