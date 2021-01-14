@@ -90,7 +90,7 @@ message TaskSpec {
     bool IsPublic = 5;
     int64 NumReplicas = 6;
     CargoReq CargoSpec = 7;
-    repeated Location DataSources = 8;
+    Location DataSources = 8;
 }
 
 message ResourceRequirement {

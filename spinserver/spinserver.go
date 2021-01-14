@@ -144,6 +144,7 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 		if task, ok := s.taskMap[cl.Id()]; ok {
 			taskid := task.GetTaskId().GetValue()
 			s.router[taskid].complete()
+			delete(s.taskMap, cl.Id())
 
 			// Restart deployment
 			//amStream := s.router[task.GetTaskId().GetValue()]
