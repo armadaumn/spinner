@@ -180,7 +180,9 @@ func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (
 	cid := status.GetCaptainId().GetValue()
 	if taskList, ok := s.taskMap[cid]; ok {
 		for _, task := range taskList {
-			go s.ReportTask(task.GetTaskId().GetValue(), cid, status)
+			if _, ok := status.UsedPorts[task.GetTaskId().Value]; ok {
+				go s.ReportTask(task.GetTaskId().GetValue(), cid, status)
+			}
 		}
 	}
 	if err != nil {
@@ -188,6 +190,21 @@ func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (
 		return &res, err
 	}
 	return &res, nil
+}
+
+func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.NodeInfo) {
+	stream := s.router[taskID].stream
+	cl, _ := s.handler.GetClient(cid)
+	taskLog := spincomm.TaskLog{
+		TaskId: &spincomm.UUID{Value: taskID},
+		Ip: cl.IP(),
+		Port: status.UsedPorts[taskID],
+		HostResource: status.HostResource,
+	}
+
+	if err := stream.Send(&taskLog); err != nil {
+		log.Println(err)
+	}
 }
 
 // Register a scheduling policy
@@ -200,18 +217,4 @@ func (s *spinnerserver) RegisterScheduler(ctx context.Context, sp *spincomm.Sche
 		res.Status = false
 	}
 	return &res, nil
-}
-
-func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.NodeInfo) {
-	stream := s.router[taskID].stream
-	cl, _ := s.handler.GetClient(cid)
-	taskLog := spincomm.TaskLog{
-		TaskId: &spincomm.UUID{Value: taskID},
-		Ip: cl.IP(),
-		HostResource: status.HostResource,
-	}
-
-	if err := stream.Send(&taskLog); err != nil {
-		log.Println(err)
-	}
 }

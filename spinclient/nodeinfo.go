@@ -5,7 +5,7 @@ import "github.com/armadanet/spinner/spincomm"
 type nodeInfo struct {
 	OpenPorts       []string
 	HostResource    map[string]*spincomm.ResourceStatus
-	UsedPorts       []string
+	UsedPorts       map[string]string
 	ActiveContainer []string
 	Images          []string
 }
