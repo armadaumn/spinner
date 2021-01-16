@@ -27,7 +27,7 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 	for id, captain := range clients {
 		result[index].id = id
 		captainGeoID := strings.SplitN(captain.Geoid(), "-", 2)[0]
-		log.Println(captainGeoID)
+		log.Printf("captain: %s, geoID: %s", captain.Id(), captainGeoID)
 		totalScore := 0
 		dist := proximityComparison([]rune(sourceGeoID), []rune(captainGeoID))
 		totalScore += dist
