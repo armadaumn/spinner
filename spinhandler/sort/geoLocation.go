@@ -21,17 +21,20 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 
 	//dataSources := tq.GetDataSources()
 	index := 0
+	ds := tq.GetDataSources()
+	sourceGeoID := geohash.Encode(ds.GetLat(), ds.GetLon())
+	log.Println(sourceGeoID)
 	for id, captain := range clients {
 		result[index].id = id
 		captainGeoID := strings.SplitN(captain.Geoid(), "-", 2)[0]
+		log.Println(captainGeoID)
 		totalScore := 0
-		ds := tq.GetDataSources()
-		sourceGeoID := geohash.Encode(ds.GetLat(), ds.GetLon())
 		dist := proximityComparison([]rune(sourceGeoID), []rune(captainGeoID))
 		totalScore += dist
 		result[index].score = totalScore
+		index++
 	}
-	sort.Slice(result, func(i, j int) bool { return result[i].score < result[j].score })
+	sort.Slice(result, func(i, j int) bool { return result[i].score > result[j].score })
 	log.Println(result)
 	var ids []string
 	for _, r := range result {

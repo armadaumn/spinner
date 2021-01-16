@@ -69,6 +69,7 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		if err != nil {
 			if err.Error() == ErrNoNode.Error() {
 				soft = true
+				log.Println("considering real time resource")
 				r.filters["SoftResource"].FilterNode(tq, newclients)
 			} else {
 				return "", nil, err
