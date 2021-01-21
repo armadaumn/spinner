@@ -53,7 +53,14 @@ func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (spinclien
 	}
 	cl, ok := h.GetClient(cid)
 	if !ok {
-		return nil, cargos, errors.New("No such client")
+		return nil, cargos, errors.New("No available client")
+	}
+	apps := cl.GetApps()
+	appid := req.GetAppId().GetValue()
+	for _, app := range apps {
+		if appid == app {
+			return nil, cargos, errors.New("No available client")
+		}
 	}
 	cl.AppendApps(req.GetAppId().Value)
 	return cl, cargos, nil

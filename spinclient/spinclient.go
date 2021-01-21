@@ -22,8 +22,8 @@ type client struct {
 	lat      float64 //latitude
 	lon      float64 //longitude
 	geoid    string
-	tasks    []string
-	apps     []string
+	tasks    []string // existing tasks
+	apps     []string // existring apps
 }
 
 type request struct {
