@@ -18,7 +18,7 @@ func (f *PortFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spi
 	}
 	for id, client := range clients {
 		isUsed := false
-		for _, port := range client.Info().UsedPorts {
+		for _, port := range client.NodeStatus().UsedPorts {
 			if _, ok := tq.GetTaskspec().Ports[port]; ok {
 				isUsed = true
 				break

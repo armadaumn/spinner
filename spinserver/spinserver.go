@@ -82,7 +82,7 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	//taskLog := spincomm.TaskLog{
 	//	TaskId: &spincomm.UUID{Value: taskID},
 	//	Ip: cl.IP(),
-	//	HostResource: cl.Info().HostResource,
+	//	HostResource: cl.NodeStatus().HostResource,
 	//}
 	//if err = stream.Send(&taskLog); err != nil {
 	//	log.Println(err)

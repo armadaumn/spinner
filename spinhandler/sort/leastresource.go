@@ -20,7 +20,7 @@ func (s *LeastRecSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spincl
 		var score, weightSum float64
 		for res, requirement := range tq.ResourceMap {
 			var avail float64
-			resStatus := client.Info().HostResource[res]
+			resStatus := client.NodeStatus().HostResource[res]
 			if soft {
 				avail = resStatus.Available
 			} else {

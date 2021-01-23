@@ -16,30 +16,19 @@ type client struct {
 	taskchan chan *spincomm.TaskRequest
 	err      error
 	ctx      context.Context
+	status   nodeStatus
 	info     nodeInfo
-	ip       string
-	port     string
-	lat      float64 //latitude
-	lon      float64 //longitude
-	geoid    string
 	tasks    []string // existing tasks
 	apps     []string // existring apps
-}
-
-type request struct {
-	Requirement *spincomm.TaskRequest
-	Stream      spincomm.Spinner_RequestServer
 }
 
 type Client interface {
 	Id() string
 	SendTask(task *spincomm.TaskRequest) error
 	Run() error
-	Info() nodeInfo
+	NodeInfo() nodeInfo
+	NodeStatus() nodeStatus
 	UpdateStatus(status *spincomm.NodeInfo) error
-	Location() (float64, float64, error)
-	IP() string
-	Geoid() string
 	GetTasks() []string
 	GetApps() []string
 	AppendApps(appid string)
@@ -53,14 +42,18 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		taskchan: make(chan *spincomm.TaskRequest),
 		cancel: cancel,
 		ctx: ctx,
-		info: nodeInfo{
+		status: nodeStatus{
 			HostResource: make(map[string]*spincomm.ResourceStatus),
-			UsedPorts: make(map[string]string),
+			UsedPorts:    make(map[string]string),
 		},
-		ip: request.GetIP(),
-		port: request.GetPort(),
-		lat: request.GetLat(),
-		lon: request.GetLon(),
+		info: nodeInfo{
+			Ip:         request.GetIP(),
+			Port:       request.GetPort(),
+			Lat:        request.GetLat(),
+			Lon:        request.GetLon(),
+			ServerType: request.GetType(),
+			Tags:       request.GetTags(),
+		},
 		tasks: make([]string, 0),
 		apps: make([]string, 0),
 	}
@@ -71,12 +64,12 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		}
 	}
 
-	if c.lat == 0 && c.lon == 0 {
+	if c.info.Lat == 0 && c.info.Lon == 0 {
 		// TODO: fetch lat and lon
-		c.lat = 45.0196
-		c.lon = -93.2402
+		c.info.Lat = 45.0196
+		c.info.Lon = -93.2402
 	}
-	c.geoid = c.genGeoHashID(c.lat, c.lon)
+	c.info.Geoid = c.genGeoHashID(c.info.Lat, c.info.Lon)
 
 	return c, nil
 }
@@ -127,40 +120,29 @@ func (c *client) Run() error {
 	}
 }
 
-func (c *client) Info() nodeInfo {
-	return c.info
+func (c *client) NodeStatus() nodeStatus {
+	return c.status
 }
 
 func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	//TODO: Remove testing output information
-	c.info.UsedPorts = status.GetUsedPorts()
-	c.info.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
-	c.info.Images = status.GetContainerStatus().GetImages()
-	c.info.HostResource = status.GetHostResource()
+	c.status.UsedPorts = status.GetUsedPorts()
+	c.status.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
+	c.status.Images = status.GetContainerStatus().GetImages()
+	c.status.HostResource = status.GetHostResource()
 	//c.apps = status.GetAppIDs()
 	c.tasks = status.GetTaskIDs()
-	log.Println("after:", c.info)
+	log.Println("after:", c.status)
 	//log.Println("app: ", c.apps)
 	return nil
 }
 
-func (c *client) Location() (float64, float64, error) {
-	if c.lat == 0 && c.lon == 0 {
-		return 0, 0, errors.New("No availabe location")
-	}
-	return c.lat, c.lon, nil
-}
-
-func (c *client) IP() string {
-	return c.ip
-}
-
-func (c *client) Geoid() string {
-	return c.geoid
+func (c *client) NodeInfo() nodeInfo {
+	return c.info
 }
 
 func (c *client) genGeoHashID(lat float64, lon float64) string {
-	geohashIDstr := geohash.Encode(lat, lon)
+	geohashIDstr := geohash.EncodeWithPrecision(lat, lon, 6)
 	uuID, err := uuid.NewUUID()
 	if err != nil {
 		log.Println(err)

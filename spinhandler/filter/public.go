@@ -10,7 +10,7 @@ type PublicFilter struct {
 
 func (f *PublicFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spinclient.Client) error {
 	for id, client := range clients {
-		if len(client.Info().OpenPorts) == 0 {
+		if len(client.NodeStatus().OpenPorts) == 0 {
 			delete(clients, id)
 		}
 	}

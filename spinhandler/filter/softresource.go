@@ -17,7 +17,7 @@ func (f *SoftResFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]
 			if !requirement.Required {
 				continue
 			}
-			if status, ok := client.Info().HostResource[res]; ok {
+			if status, ok := client.NodeStatus().HostResource[res]; ok {
 				if res == "CPU" || res == "Memory" {
 					percent := float64(requirement.Requested) / float64(status.Total) * 100.0
 					if status.Available < percent {

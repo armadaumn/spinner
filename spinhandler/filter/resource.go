@@ -31,7 +31,7 @@ func (f *ResourceFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string
 	for id, client := range clients {
 		isSufficient := true
 		for res, requirement := range tq.GetTaskspec().ResourceMap {
-			if status, ok := client.Info().HostResource[res]; ok {
+			if status, ok := client.NodeStatus().HostResource[res]; ok {
 				if status.Unassigned < requirement.Requested {
 					isSufficient = false
 					break
