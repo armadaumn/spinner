@@ -197,7 +197,7 @@ func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.N
 	cl, _ := s.handler.GetClient(cid)
 	taskLog := spincomm.TaskLog{
 		TaskId: &spincomm.UUID{Value: taskID},
-		Ip: cl.IP(),
+		Ip: cl.NodeInfo().Ip,
 		Port: status.UsedPorts[taskID],
 		HostResource: status.HostResource,
 	}

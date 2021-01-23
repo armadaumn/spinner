@@ -30,6 +30,7 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 	for id, captain := range clients {
 		result[index].id = id
 		captainInfo := captain.NodeInfo()
+		result[index].serverType = captainInfo.ServerType
 
 		// Get neighbors of the data source
 		neighbor := geohash.Neighbors(sourceGeoID[:4])

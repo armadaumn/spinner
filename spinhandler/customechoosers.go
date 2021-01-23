@@ -28,6 +28,7 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["Public"] = &filter.PublicFilter{}
 	chooser.filters["Resource"] = &filter.ResourceFilter{}
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
+	chooser.filters["Tag"] = &filter.TagFilter{}
 	//chooser.filters["Affinity"] = &filter.AffinityFilter{}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
@@ -115,7 +116,8 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 	for _, id := range sortResult {
 		if client, ok := c.Get(id); ok {
 			if cargoFlag {
-				lat, lon, err := client.Location()
+				nodeInfo := client.NodeInfo()
+				lat, lon := nodeInfo.Lat, nodeInfo.Lon
 				if err != nil {
 					continue
 				}
