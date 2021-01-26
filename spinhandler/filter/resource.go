@@ -49,7 +49,7 @@ func (f *ResourceFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string
 		for k, v := range newclients {
 			clients[k] = v
 		}
-		return errors.New("no nodes")
+		return errors.New("no resource")
 	}
 	return nil
 }
