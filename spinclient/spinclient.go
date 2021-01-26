@@ -32,6 +32,7 @@ type Client interface {
 	GetTasks() []string
 	GetApps() []string
 	AppendApps(appid string)
+	UpdateAllocation(req map[string]*spincomm.ResourceRequirement)
 }
 
 func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream spincomm.Spinner_AttachServer) (Client, error) {
@@ -161,4 +162,11 @@ func (c *client) GetApps() []string {
 
 func (c *client) AppendApps(appid string) {
 	c.apps = append(c.apps, appid)
+}
+
+func (c *client) UpdateAllocation(req map[string]*spincomm.ResourceRequirement) {
+	for key, value := range req {
+		c.status.HostResource[key].Unassigned -= value.Requested
+	}
+	return
 }

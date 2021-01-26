@@ -63,6 +63,7 @@ func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (spinclien
 		}
 	}
 	cl.AppendApps(req.GetAppId().Value)
+	cl.UpdateAllocation(req.GetTaskspec().GetResourceMap())
 	return cl, cargos, nil
 }
 
