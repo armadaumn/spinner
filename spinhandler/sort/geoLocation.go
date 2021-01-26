@@ -32,7 +32,7 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 		result[index].id = id
 		captainInfo := captain.NodeInfo()
 		result[index].serverType = captainInfo.ServerType
-		result[index].availCpu = captain.NodeStatus().HostResource["CPU"].Unassigned / tq.GetResourceMap()["CPU"].Requested
+		result[index].availCpu = captain.NodeStatus().HostResource["CPU"].Total
 
 		// Get neighbors of the data source
 		neighbor := geohash.Neighbors(sourceGeoID[:4])
@@ -51,7 +51,9 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 		if result[i].score != result[j].score {
 			return result[i].score > result[j].score
 		}
-		return int64(result[i].serverType) + result[i].availCpu > int64(result[j].serverType) + result[j].availCpu
+		i_weightedScore := 0.5 * (float64(result[i].serverType) * 2 + 2) + 0.5 * float64(result[i].availCpu)
+		j_weightedScore := 0.5 * (float64(result[j].serverType) * 2 + 2) + 0.5 * float64(result[j].availCpu)
+		return i_weightedScore > j_weightedScore
 	})
 
 	log.Println(result)
