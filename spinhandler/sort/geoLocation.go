@@ -26,7 +26,7 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 	//dataSources := tq.GetDataSources()
 	index := 0
 	ds := tq.GetDataSources()
-	sourceGeoID := geohash.Encode(ds.GetLat(), ds.GetLon())
+	sourceGeoID := geohash.EncodeWithPrecision(ds.GetLat(), ds.GetLon(), 4)
 	log.Println(sourceGeoID)
 	for id, captain := range clients {
 		result[index].id = id

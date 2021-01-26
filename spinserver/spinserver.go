@@ -200,6 +200,8 @@ func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.N
 		Ip: cl.NodeInfo().Ip,
 		Port: status.UsedPorts[taskID],
 		HostResource: status.HostResource,
+		Location: &spincomm.Location{Lat: cl.NodeInfo().Lat, Lon: cl.NodeInfo().Lon},
+		Tag: cl.NodeInfo().Tags,
 	}
 
 	if err := stream.Send(&taskLog); err != nil {

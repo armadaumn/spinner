@@ -143,7 +143,7 @@ func (c *client) NodeInfo() nodeInfo {
 }
 
 func (c *client) genGeoHashID(lat float64, lon float64) string {
-	geohashIDstr := geohash.EncodeWithPrecision(lat, lon, 6)
+	geohashIDstr := geohash.EncodeWithPrecision(lat, lon, 4)
 	uuID, err := uuid.NewUUID()
 	if err != nil {
 		log.Println(err)
