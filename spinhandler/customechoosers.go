@@ -11,7 +11,6 @@ import (
 	"github.com/stretchr/stew/slice"
 	"google.golang.org/grpc"
 	"log"
-	"github.com/stretchr/stew"
 )
 
 type CustomChooser struct {
