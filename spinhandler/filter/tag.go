@@ -3,7 +3,6 @@ package filter
 import (
 	"github.com/armadanet/spinner/spinclient"
 	"github.com/armadanet/spinner/spincomm"
-	"log"
 )
 
 type TagFilter struct {
@@ -21,9 +20,7 @@ func (f *TagFilter) FilterNode(tq *spincomm.TaskRequest, clients map[string]spin
 		isOverlapped := false
 		nodeTags := captain.NodeInfo().Tags
 		for _, tag := range tags {
-			log.Printf(tag)
 			for _, nodeTag := range nodeTags {
-				log.Println(nodeTag)
 				if tag == nodeTag {
 					isOverlapped = true
 					break

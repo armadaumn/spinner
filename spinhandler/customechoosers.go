@@ -8,14 +8,17 @@ import (
 	"github.com/armadanet/spinner/spincomm"
 	"github.com/armadanet/spinner/spinhandler/filter"
 	"github.com/armadanet/spinner/spinhandler/sort"
+	"github.com/stretchr/stew/slice"
 	"google.golang.org/grpc"
 	"log"
+	"github.com/stretchr/stew"
 )
 
 type CustomChooser struct {
 	// LastChoice	string
-	filters map[string]filter.Filter
-	sort    map[string]sort.Sort
+	filters   map[string]filter.Filter
+	sort      map[string]sort.Sort
+	filterKey []string
 }
 
 func InitCustomChooser() CustomChooser {
@@ -30,6 +33,8 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
 	chooser.filters["Tag"] = &filter.TagFilter{}
 	//chooser.filters["Affinity"] = &filter.AffinityFilter{}
+
+	chooser.filterKey = []string{"FreePorts", "Public", "Resource", "Tag"}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
 	chooser.sort["Geolocation"] = &sort.GeoSort{}
@@ -63,12 +68,14 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		ErrNoNode = errors.New("no nodes")
 	)
 
-	filterPlugins := tq.GetTaskspec().GetFilters()
-	for _, f := range filterPlugins {
-		filter, ok := r.filters[f]
+	requiredFilters := tq.GetTaskspec().GetFilters()
+
+	for _, f := range r.filterKey {
+		ok := slice.Contains(requiredFilters, f)
 		if !ok {
 			continue
 		}
+		filter, _ := r.filters[f]
 		err = filter.FilterNode(tq, newclients)
 
 		if err != nil {

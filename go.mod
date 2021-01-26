@@ -14,6 +14,7 @@ require (
 	github.com/golang/protobuf v1.4.3
 	github.com/google/uuid v1.1.2
 	github.com/mmcloughlin/geohash v0.10.0
+	github.com/stretchr/stew v0.0.0-20130812190256-80ef0842b48b
 	golang.org/x/net v0.0.0-20200114155413-6afb5195e5aa // indirect
 	golang.org/x/sync v0.0.0-20190423024810-112230192c58
 	golang.org/x/sys v0.0.0-20190507160741-ecd444e8653b // indirect
