@@ -166,7 +166,8 @@ func (c *client) AppendApps(appid string) {
 
 func (c *client) UpdateAllocation(req map[string]*spincomm.ResourceRequirement) {
 	for key, value := range req {
-		c.status.HostResource[key].Unassigned -= value.Requested
+		c.status.HostResource[key].Assigned += value.Requested
+		c.status.HostResource[key].Unassigned = c.status.HostResource[key].Total - c.status.HostResource[key].Assigned
 	}
 	return
 }

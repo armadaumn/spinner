@@ -31,9 +31,9 @@ func InitCustomChooser() CustomChooser {
 	chooser.filters["Resource"] = &filter.ResourceFilter{}
 	chooser.filters["SoftResource"] = &filter.SoftResFilter{}
 	chooser.filters["Tag"] = &filter.TagFilter{}
-	//chooser.filters["Affinity"] = &filter.AffinityFilter{}
+	chooser.filters["FirstDeployment"] = &filter.AffinityFilter{}
 
-	chooser.filterKey = []string{"FreePorts", "Public", "Resource", "Tag"}
+	chooser.filterKey = []string{"FreePorts", "Public", "Resource", "FirstDeployment", "Tag"}
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
 	chooser.sort["Geolocation"] = &sort.GeoSort{}
@@ -64,7 +64,7 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 	var (
 		soft bool
 		err  error
-		ErrNoNode = errors.New("no nodes")
+		ErrNoNode = errors.New("no resource")
 	)
 
 	requiredFilters := tq.GetTaskspec().GetFilters()
@@ -88,7 +88,7 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		}
 
 		if len(newclients) == 0 {
-			err := errors.New("no clients")
+			err := errors.New("no resource")
 			return "", nil, err
 		}
 	}
@@ -144,5 +144,5 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		}
 	}
 
-	return "", nil, errors.New("no node")
+	return "", nil, errors.New("no resource")
 }

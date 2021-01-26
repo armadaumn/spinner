@@ -68,7 +68,7 @@ func proximityComparison(neighbor []string, ghDst []rune) int {
 		ghSrcLen := len(ghSrc)
 		prefixMatchCount := 0
 
-		for i := 0; i < ghSrcLen; i++ {
+		for i := 0; i < ghSrcLen && i < len(ghDst); i++ {
 			if ghSrc[i] == ghDst[i] {
 				prefixMatchCount++
 			} else {
