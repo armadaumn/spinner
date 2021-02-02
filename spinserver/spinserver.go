@@ -203,6 +203,11 @@ func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.N
 		Location: &spincomm.Location{Lat: cl.NodeInfo().Lat, Lon: cl.NodeInfo().Lon},
 		Tag: cl.NodeInfo().Tags,
 	}
+	if cl.NodeInfo().ServerType == spincomm.Type_LocalServer {
+		taskLog.NodeType = 2
+	} else {
+		taskLog.NodeType = 3
+	}
 
 	if err := stream.Send(&taskLog); err != nil {
 		log.Println(err)
