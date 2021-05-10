@@ -8,6 +8,7 @@ type nodeStatus struct {
 	UsedPorts       map[string]string
 	ActiveContainer []string
 	Images          []string
+	Layers          map[string]string
 }
 
 type nodeInfo struct {

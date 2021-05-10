@@ -109,7 +109,7 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 	if tq.GetTaskspec().GetCargoSpec() != nil {
 		cargoFlag = true
 		//TODO: change to a dynamic address "cargoMgr:port"
-		conn, err = grpc.Dial("cargomgr"+":"+"8099", grpc.WithInsecure())
+		conn, err = grpc.Dial("128.101.118.101"+":"+"8080", grpc.WithInsecure())
 		if err != nil {
 			cargoFlag = false
 			log.Printf("Cannot access to Cargo Manager")

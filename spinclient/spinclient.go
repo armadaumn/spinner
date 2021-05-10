@@ -44,8 +44,11 @@ func RequestClient(ctx context.Context, request *spincomm.JoinRequest, stream sp
 		cancel: cancel,
 		ctx: ctx,
 		status: nodeStatus{
-			HostResource: make(map[string]*spincomm.ResourceStatus),
-			UsedPorts:    make(map[string]string),
+			HostResource:    make(map[string]*spincomm.ResourceStatus),
+			UsedPorts:       make(map[string]string),
+			Layers:          make(map[string]string),
+			ActiveContainer: make([]string, 0),
+			Images:          make([]string, 0),
 		},
 		info: nodeInfo{
 			Ip:         request.GetIP(),
@@ -131,6 +134,7 @@ func (c *client) UpdateStatus(status *spincomm.NodeInfo) error {
 	c.status.ActiveContainer = status.GetContainerStatus().GetActiveContainer()
 	c.status.Images = status.GetContainerStatus().GetImages()
 	c.status.HostResource = status.GetHostResource()
+	c.status.Layers = status.GetLayers()
 	//c.apps = status.GetAppIDs()
 	c.tasks = status.GetTaskIDs()
 	log.Println("after:", c.status)

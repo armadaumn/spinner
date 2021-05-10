@@ -91,6 +91,7 @@ message NodeInfo {
     ContainerStatus container_status = 4;
     repeated string appIDs = 5;
     repeated string taskIDs = 6;
+    map<string, string> layers = 7;
 }
 
 
