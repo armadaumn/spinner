@@ -3,6 +3,7 @@ DEV_DOCKERFILE := Dockerfile.dev
 CONTAINER := spinner
 DOCKERFILE := Dockerfile
 NETWORK := spinner-local-network
+REGISTYURL := localhost:5000
 
 protobuf: protobuf_build
 	cd .. && docker run -it -v `pwd`:/home/dev $(DEV_CONTAINER) protoc -I $(DEV_CONTAINER)/ $(DEV_CONTAINER)/$(DEV_CONTAINER).proto --go_out=plugins=grpc:$(DEV_CONTAINER) --go_opt=paths=source_relative
@@ -18,7 +19,7 @@ test_build:
 	cd .. && docker build -t $(DEV_CONTAINER) -f build/$(DEV_DOCKERFILE) . 
 
 run: build network
-	docker run -it --rm -p 5912:5912 --net $(NETWORK) --name $(CONTAINER) $(CONTAINER)
+	docker run -it --rm -p 5912:5912 --net $(NETWORK) --name $(CONTAINER) $(CONTAINER) REGISTYURL
 
 build: test_build
 	cd .. && docker build -t $(CONTAINER) -f build/$(DOCKERFILE) --build-arg base=$(DEV_CONTAINER) .

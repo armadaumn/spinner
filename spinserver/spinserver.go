@@ -9,6 +9,8 @@ import (
 	"google.golang.org/grpc"
 	"io"
 	"log"
+	"strings"
+
 	// "time"
 	// "strconv"
 )
@@ -33,9 +35,10 @@ type spinnerserver struct {
 	chooser		spinhandler.Chooser
 	router		map[string]*spinrequest
 	taskMap     map[string][]*spincomm.TaskRequest
+	registry    spinhandler.Registry
 }
   
-func New(ctx context.Context) *grpc.Server {
+func New(ctx context.Context, registryURL string) *grpc.Server {
 	chooser := spinhandler.InitCustomChooser()
 	s := &spinnerserver{
 	  handler: spinhandler.New(),
@@ -44,6 +47,11 @@ func New(ctx context.Context) *grpc.Server {
 	  router: make(map[string]*spinrequest),
 	  taskMap: make(map[string][]*spincomm.TaskRequest),
 	}
+	if registryURL != "" {
+		s.registry = spinhandler.NewRegistry(registryURL)
+		go s.registry.UpdateImageList()
+	}
+
 	grpcServer := grpc.NewServer()
 	spincomm.RegisterSpinnerServer(grpcServer, s)
 	return grpcServer
@@ -65,6 +73,16 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 	if err != nil {return err}
 	//cl, ok := s.handler.GetClient(cid)
 	//if !ok {return errors.New("No such client")}
+
+	// If the local registry has the same image, pull it from the local one (Note that maybe slower than docker hub)
+	image := req.GetImage()
+	imageName := strings.Split(image, "/")
+	localRepos := s.registry.GetRepos()
+	log.Println(localRepos)
+	if _, ok := localRepos[imageName[2]]; ok {
+		localName := s.registry.GetUrl() + "/" + imageName[2]
+		req.Image = localName
+	}
 
 	if cargo != nil {
 		req.Taskspec.CargoSpec.IPs = cargo.GetIPs()
@@ -225,3 +243,5 @@ func (s *spinnerserver) RegisterScheduler(ctx context.Context, sp *spincomm.Sche
 	}
 	return &res, nil
 }
+
+//TODO: set a new registry url

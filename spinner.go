@@ -13,15 +13,15 @@ import (
   "golang.org/x/sync/errgroup"
 )
 
-func CreateAndServe() error {
+func CreateAndServe(regsistry string, beaconURL string) error {
   ctx := context.Background()
-  return GracefulListen(ctx,  5912)
+  return GracefulListen(ctx,  5912, regsistry, beaconURL)
 }
 
-func GracefulListen(ctx context.Context, port int) error {
+func GracefulListen(ctx context.Context, port int, registryURL string, beaconURL string) error {
   ctx, cancel := context.WithCancel(ctx)
   defer cancel()
-  server := spinserver.New(ctx)
+  server := spinserver.New(ctx, registryURL)
   g, ctx := errgroup.WithContext(ctx)
 
   interrupt := make(chan os.Signal, 1)
