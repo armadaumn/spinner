@@ -106,6 +106,8 @@ message TaskSpec {
     CargoReq CargoSpec = 7;
     Location DataSources = 8;
     repeated string Tags = 9;
+    string image = 10;
+    string imageVersion = 11;
 }
 
 message ResourceRequirement {

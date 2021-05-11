@@ -37,6 +37,7 @@ func InitCustomChooser() CustomChooser {
 
 	chooser.sort["LeastUsage"] = &sort.LeastRecSort{}
 	chooser.sort["Geolocation"] = &sort.GeoSort{}
+	chooser.sort["Dependency"] =&sort.LayerSort{ImageLayer: make(map[string][]string)}
 	return chooser
 }
 
