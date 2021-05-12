@@ -47,8 +47,8 @@ func New(ctx context.Context, registryURL string) *grpc.Server {
 	  router: make(map[string]*spinrequest),
 	  taskMap: make(map[string][]*spincomm.TaskRequest),
 	}
+	s.registry = spinhandler.NewRegistry(registryURL)
 	if registryURL != "" {
-		s.registry = spinhandler.NewRegistry(registryURL)
 		go s.registry.UpdateImageList()
 	}
 

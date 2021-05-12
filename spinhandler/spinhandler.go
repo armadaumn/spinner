@@ -55,13 +55,13 @@ func (h *handler) ChooseClient(ch Chooser, req *spincomm.TaskRequest) (spinclien
 	if !ok {
 		return nil, cargos, errors.New("no resource")
 	}
-	apps := cl.GetApps()
-	appid := req.GetAppId().GetValue()
-	for _, app := range apps {
-		if appid == app {
-			return nil, cargos, errors.New("task is present")
-		}
-	}
+	//apps := cl.GetApps()
+	//appid := req.GetAppId().GetValue()
+	//for _, app := range apps {
+	//	if appid == app {
+	//		return nil, cargos, errors.New("task is present")
+	//	}
+	//}
 	cl.AppendApps(req.GetAppId().Value)
 	cl.UpdateAllocation(req.GetTaskspec().GetResourceMap())
 	return cl, cargos, nil
