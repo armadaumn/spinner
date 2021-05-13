@@ -26,13 +26,18 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 	//dataSources := tq.GetDataSources()
 	index := 0
 	ds := tq.GetDataSources()
+	requiredCpu := tq.GetResourceMap()["CPU"].Requested
 	sourceGeoID := geohash.EncodeWithPrecision(ds.GetLat(), ds.GetLon(), 4)
 	log.Println(sourceGeoID)
 	for id, captain := range clients {
 		result[index].id = id
 		captainInfo := captain.NodeInfo()
 		result[index].serverType = captainInfo.ServerType
-		result[index].availCpu = captain.NodeStatus().HostResource["CPU"].Total
+		if captain.NodeStatus().HostResource["CPU"].Unassigned <= requiredCpu {
+			result[index].availCpu = captain.NodeStatus().HostResource["CPU"].Unassigned
+		} else {
+			result[index].availCpu = requiredCpu
+		}
 
 		// Get neighbors of the data source
 		neighbor := geohash.Neighbors(sourceGeoID[:4])
