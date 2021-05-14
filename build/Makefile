@@ -6,7 +6,7 @@ NETWORK := spinner-local-network
 REGISTYURL := localhost:5000
 
 protobuf: protobuf_build
-	cd .. && docker run -it -v `pwd`:/home/dev $(DEV_CONTAINER) protoc -I $(DEV_CONTAINER)/ $(DEV_CONTAINER)/$(DEV_CONTAINER).proto --go_out=plugins=grpc:$(DEV_CONTAINER) --go_opt=paths=source_relative
+	cd .. && docker run --rm -it -v `pwd`:/home/dev $(DEV_CONTAINER) protoc -I $(DEV_CONTAINER)/ $(DEV_CONTAINER)/$(DEV_CONTAINER).proto --go_out=plugins=grpc:$(DEV_CONTAINER) --go_opt=paths=source_relative
 
 protobuf_build:
 	cd .. && docker build -t $(DEV_CONTAINER) -f build/$(DEV_DOCKERFILE) .

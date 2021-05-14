@@ -220,6 +220,7 @@ func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.N
 		HostResource: status.HostResource,
 		Location: &spincomm.Location{Lat: cl.NodeInfo().Lat, Lon: cl.NodeInfo().Lon},
 		Tag: cl.NodeInfo().Tags,
+		ContainerUtilization: status.GetContainerUtilization(),
 	}
 	if cl.NodeInfo().ServerType == spincomm.Type_LocalServer {
 		taskLog.NodeType = 2
