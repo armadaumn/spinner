@@ -190,6 +190,7 @@ func (s *spinnerserver) Attach(req *spincomm.JoinRequest, stream spincomm.Spinne
 
 // Captain status update
 func (s *spinnerserver) Update(ctx context.Context, status *spincomm.NodeInfo) (*spincomm.PingResp, error) {
+	log.Println(status)
 	err := s.handler.UpdateClient(status)
 	res := spincomm.PingResp{
 		Status: true,
@@ -220,7 +221,8 @@ func (s *spinnerserver) ReportTask(taskID string, cid string, status *spincomm.N
 		HostResource: status.HostResource,
 		Location: &spincomm.Location{Lat: cl.NodeInfo().Lat, Lon: cl.NodeInfo().Lon},
 		Tag: cl.NodeInfo().Tags,
-		ContainerUtilization: status.GetContainerUtilization(),
+		CpuUtilization: status.GetContainerUtilization()[taskID],
+		AssignedCpu: status.GetAssignedCpu()[taskID],
 	}
 	if cl.NodeInfo().ServerType == spincomm.Type_LocalServer {
 		taskLog.NodeType = 2

@@ -59,7 +59,8 @@ message TaskLog {
     Location location = 5;
     repeated string tag = 6;
     int64 node_type = 7;
-    map<string, double> containerUtilization = 8;
+    double cpuUtilization = 8;
+    int64 assignedCpu = 9;
 }
 
 message TaskCompletion {
@@ -94,6 +95,7 @@ message NodeInfo {
     repeated string taskIDs = 6;
     map<string, string> layers = 7;
     map<string, double> containerUtilization = 8;
+    map<string, int64> assignedCpu = 9;
 }
 
 
