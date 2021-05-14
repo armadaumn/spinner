@@ -103,6 +103,11 @@ func (r *CustomChooser) F(c ClientMap, tq *spincomm.TaskRequest) (string, *taskT
 		}
 	}
 
+	if len(sortResult) == 0 {
+		err := errors.New("no resource")
+		return "", nil, err
+	}
+
 	// Contact with cargo manager
 	var service taskToCargoMgr.RpcTaskToCargoMgrClient
 	var conn *grpc.ClientConn

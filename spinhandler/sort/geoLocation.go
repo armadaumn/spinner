@@ -30,6 +30,9 @@ func (s *GeoSort) SortNode(tq *spincomm.TaskSpec, clients map[string]spinclient.
 	sourceGeoID := geohash.EncodeWithPrecision(ds.GetLat(), ds.GetLon(), 4)
 	log.Println(sourceGeoID)
 	for id, captain := range clients {
+		if captain.NodeStatus().HostResource["CPU"].Unassigned == 0 {
+			continue
+		}
 		result[index].id = id
 		captainInfo := captain.NodeInfo()
 		result[index].serverType = captainInfo.ServerType
