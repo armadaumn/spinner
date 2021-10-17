@@ -9,7 +9,7 @@ import (
 	"google.golang.org/grpc"
 	"io"
 	"log"
-	"strings"
+	// "strings"
 
 	// "time"
 	// "strconv"
@@ -76,11 +76,13 @@ func (s *spinnerserver) Request(req *spincomm.TaskRequest, stream spincomm.Spinn
 
 	// If the local registry has the same image, pull it from the local one (Note that maybe slower than docker hub)
 	image := req.GetImage()
-	imageName := strings.Split(image, "/")
+	// Remove prefix docker.io/
+	imageName := image[10:]
 	localRepos := s.registry.GetRepos()
 	log.Println(localRepos)
-	if _, ok := localRepos[imageName[2]]; ok {
-		localName := s.registry.GetUrl() + "/" + imageName[2]
+	if _, ok := localRepos[imageName]; ok {
+		log.Println(imageName)
+		localName := s.registry.GetUrl() + "/" + imageName
 		req.Image = localName
 	}
 
